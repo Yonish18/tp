@@ -12,10 +12,11 @@ public class Medistock {
         Ui.greet();
 
         Scanner in = new Scanner(System.in);
-        while (true) {
+        while (in.hasNextLine()) {
             String command = in.nextLine();
 
             if (command.equals("exit")) {
+                Ui.exit();
                 break;
             }
         }
