@@ -91,10 +91,9 @@ public class Ui {
     }
 
     public static void printItemDetails(InventoryItem item) {
-        String name = item.getName();
         String unit = item.getUnit();
         int quantity = item.getQuantity();
-        System.out.println(name + " : " + quantity + " " + unit);
+        System.out.println(quantity + " " + unit);
     }
 
     public static void printBatch(int quantity, InventoryItem item, LocalDate date) {

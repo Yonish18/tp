@@ -4,6 +4,7 @@ import medistock.exception.MediStockException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -136,21 +137,13 @@ public class InventoryItem {
     private void sortAndRemoveExpiredBatches() {
         LocalDate today = LocalDate.now();
 
-        // Sort batches by expiry date, earliest first (bubble sort)
-        for (int i = 0; i < batches.size() - 1; i++) {
-            for (int j = 0; j < batches.size() - 1 - i; j++) {
-                if (batches.get(j).getExpiryDate().isAfter(batches.get(j + 1).getExpiryDate())) {
-                    Batch temp = batches.get(j);
-                    batches.set(j, batches.get(j + 1));
-                    batches.set(j + 1, temp);
-                }
-            }
-        }
+        // Earliest first
+        batches.sort(Comparator.comparing(Batch::getExpiryDate));
 
         // Remove all expired batches
         int i = 0;
         while (i < batches.size()) {
-            if (!batches.get(i).getExpiryDate().isAfter(today)) {
+            if (batches.get(i).getExpiryDate().isBefore(today)) {
                 System.out.println("Please remove expired batch "
                         + batches.get(i).getBatchNumber() + " (expired: "
                         + batches.get(i).getExpiryDate() + ")");
