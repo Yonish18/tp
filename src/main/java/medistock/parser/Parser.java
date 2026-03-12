@@ -69,7 +69,7 @@ public class Parser {
      * @throws MediStockException If the format is invalid or parameters are out of
      *                            order.
      */
-    private static Command prepareBatch(String text) throws MediStockException {
+    public static Command prepareBatch(String text) throws MediStockException {
         int nameIndex = text.indexOf("n/");
         int quantIndex = text.indexOf("q/");
         int expiryIndex = text.indexOf("d/");
@@ -84,15 +84,15 @@ public class Parser {
 
         String name = getArgument(text, nameIndex, quantIndex).trim();
 
-        if (quantIndex <= 0) {
-            throw new MediStockException("Invalid quantity, Please enter a positive whole number for the quantity ");
-        }
-
         int quant;
         try {
             quant = Integer.parseInt(getArgument(text, quantIndex, expiryIndex).trim());
         } catch (NumberFormatException e) {
-            throw new MediStockException("Invalid quantity. Please enter a valid whole number for the quantity.");
+            throw new MediStockException("Invalid quantity. Please enter a positive whole number for the quantity.");
+        }
+
+        if (quant <= 0) {
+            throw new MediStockException("Invalid quantity. Please enter a positive whole number for the quantity.");
         }
 
         LocalDate expiryDate;
