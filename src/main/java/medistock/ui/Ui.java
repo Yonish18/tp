@@ -71,6 +71,33 @@ public class Ui {
         printLine();
     }
 
+    /**
+     * Shows the inventory list to the user.
+     *
+     * @param inventory The inventory to display.
+     */
+    public void showInventoryList(Inventory inventory) {
+        if (inventory.getAllItems().isEmpty()) {
+            printEmptyInventoryMessage();
+        } else {
+            printLine();
+            System.out.println("Here are the medicines in your inventory:");
+            int itemCount = 1;
+            for (InventoryItem item : inventory.getAllItems()) {
+                System.out.println(itemCount + ". " + item.getName() + " (" + item.getUnit() + ") " +
+                        "| Qty: " + item.getQuantity());
+                itemCount++;
+            }
+            printLine();
+        }
+    }
+
+    private static void printEmptyInventoryMessage() {
+        printLine();
+        System.out.println("Your inventory is empty.");
+        printLine();
+    }
+
     public static void printCreate(String name, String unit, int minimumThreshold) {
         printLine();
         System.out.println(String.format("Product created:" + name + " (" + unit + ")\n" + "Minimum threshold: "
