@@ -1,14 +1,8 @@
 package medistock.parser;
 
-import medistock.command.BatchCommand;
-import medistock.command.Command;
-import medistock.command.CreateCommand;
-import medistock.command.DeleteCommandIndex;
-import medistock.command.DeleteCommandName;
-import medistock.command.ExitCommand;
-import medistock.command.WithdrawCommand;
-import medistock.command.ListCommand;
+import medistock.command.*;
 import medistock.exception.MediStockException;
+import medistock.ui.Ui;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -29,7 +23,10 @@ public class Parser {
             return new ListCommand();
         } else if (text.startsWith("exit") || text.startsWith("quit")) {
             return new ExitCommand();
-        } else {
+        } else if (text.equals("help")) {
+            return new HelpCommand();
+        }
+        else {
             throw new MediStockException("Unknown command.");
         }
 
@@ -79,12 +76,12 @@ public class Parser {
         int expiryIndex = text.indexOf("d/");
 
         if (nameIndex == -1 || quantIndex == -1 || expiryIndex == -1) {
-            throw new MediStockException("Invalid batch format. Use: batch n/NAME q/QUANTITY d/EXPIRY_DATE");
+            throw new MediStockException("Invalid batch format. " + Ui.BATCH_FORMAT);
         }
 
         if (!(nameIndex < quantIndex && quantIndex < expiryIndex)) {
             throw new MediStockException("Ensure the arguments are in the correct order:" +
-                            " n/NAME q/QUANTITY d/EXPIRY_DATE");
+                            Ui.BATCH_FORMAT);
         }
 
         String name = getArgument(text, nameIndex, quantIndex).trim();
@@ -124,11 +121,11 @@ public class Parser {
         int minIndex = text.indexOf("min/");
 
         if (nameIndex == -1 || unitIndex == -1 || minIndex == -1) {
-            throw new MediStockException("Invalid create format. Use: create n/NAME u/UNIT min/THRESHOLD");
+            throw new MediStockException("Invalid create format. " + Ui.CREATE_FORMAT);
         }
 
         if (!(nameIndex < unitIndex && unitIndex < minIndex)) {
-            throw new MediStockException("Use create format: create n/NAME u/UNIT min/THRESHOLD");
+            throw new MediStockException("Use create format: " + Ui.CREATE_FORMAT);
         }
 
         String name = getArgument(text, nameIndex, unitIndex);
@@ -166,10 +163,10 @@ public class Parser {
         int quantIndex = text.indexOf("q/");
 
         if (nameIndex == -1 || quantIndex == -1) {
-            throw new MediStockException("Invalid withdraw format. Use: withdraw n/NAME q/QUANTITY");
+            throw new MediStockException("Invalid withdraw format. " + Ui.WITHDRAW_FORMAT);
         }
         if (!(nameIndex < quantIndex)) {
-            throw new MediStockException("Use withdraw format: withdraw n/NAME q/QUANTITY");
+            throw new MediStockException("Use correct format: " + Ui.WITHDRAW_FORMAT);
         }
 
         String name = getArgument(text, nameIndex, quantIndex);
@@ -197,7 +194,7 @@ public class Parser {
         int nameIndex = text.indexOf("n/");
 
         if (nameIndex == -1) {
-            throw new MediStockException("Invalid delete format. Use: delete 'n/NAME' or 'i/INDEX'");
+            throw new MediStockException("Invalid delete format. " + Ui.DELETE_FORMAT);
         }
 
         String name = getArgument(text, nameIndex);
@@ -213,7 +210,7 @@ public class Parser {
         int nameIndex = text.indexOf("i/");
 
         if (nameIndex == -1) {
-            throw new MediStockException("Invalid delete format. Use: delete 'n/NAME' or 'i/INDEX'");
+            throw new MediStockException("Invalid delete format. " + Ui.DELETE_FORMAT);
         }
 
         String indexText = getArgument(text, nameIndex);
