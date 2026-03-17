@@ -5,19 +5,16 @@ import medistock.inventory.Inventory;
 import medistock.inventory.InventoryItem;
 import medistock.ui.Ui;
 
-public class WithdrawCommand extends Command {
+public class DeleteCommandName extends Command {
     private final String name;
-    private final int quantity;
 
-    public WithdrawCommand(String name, int quantity) {
+    public DeleteCommandName(String name) {
         this.name = name;
-        this.quantity = quantity;
     }
 
     @Override
     public void execute(Inventory inventory, Ui ui) throws MediStockException {
-        InventoryItem item = inventory.getItem(name);
-        item.withdraw(quantity);
-        ui.printWithdraw(quantity, item);
+        InventoryItem deletedItem = inventory.deleteItem(name);
+        ui.printDelete(deletedItem);
     }
 }
