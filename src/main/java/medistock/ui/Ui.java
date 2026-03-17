@@ -90,22 +90,28 @@ public class Ui {
         printLine();
     }
 
+    public void printNewLine() {
+        System.out.println("");
+    }
     /**
      * Shows the inventory list to the user.
      *
      * @param inventory The inventory to display.
      */
-    public void showInventoryList(Inventory inventory) {
+    public void showInventoryList(Inventory inventory) throws MediStockException {
         if (inventory.getAllItems().isEmpty()) {
             printEmptyInventoryMessage();
         } else {
+            int itemIndex = 1;
+            int maxIndex = inventory.getSize();
             printLine();
-            System.out.println("Here are the medicines in your inventory:");
-            int itemCount = 1;
+            System.out.println("Current Pharmaceutical Inventory:");
             for (InventoryItem item : inventory.getAllItems()) {
-                System.out.println(itemCount + ". " + item.getName() + " (" + item.getUnit() + ") " +
-                        "| Qty: " + item.getQuantity());
-                itemCount++;
+                printItemDetails(inventory, item);
+                if (itemIndex < maxIndex) {
+                    printNewLine();
+                }
+                itemIndex = itemIndex + 1;
             }
             printLine();
         }
@@ -144,13 +150,6 @@ public class Ui {
         printLine();
     }
 
-    public static void printInventory(Inventory inventory) {
-        System.out.println("Current Pharmaceutical Inventory:");
-        printLine();
-
-        printLine();
-    }
-
     public void printSpacing(){
         System.out.print("    ");
     }
@@ -161,13 +160,10 @@ public class Ui {
         System.out.println(quantity + " " + unit);
     }
 
-    public void printItemDetails(Inventory inventory, InventoryItem item) throws MediStockException {
-
+    public void printItemDetails(Inventory inventory, InventoryItem item)
+                    throws MediStockException {
         String itemName = item.getName();
-
-        System.out.println(String.format("Stock of %s is now:", itemName));
-        printSpacing();
-        System.out.print(String.format("%d. %s (%d) %n", getItemIndex(inventory, itemName),
+        System.out.print(String.format("%d. %s (Min: %d) %n", getItemIndex(inventory, itemName),
                         itemName,item.getMinimumThreshold()));
         printSpacing();
         System.out.println(String.format("Total: %d %s", item.getQuantity(), item.getUnit()));
@@ -175,7 +171,6 @@ public class Ui {
         System.out.println(String.format("Earliest Exp: %tF %n    Status: %s", item.getEarliestExpiry(),
                         item.getStockStatus()));
     }
-
 
     public void printBatch(Inventory inventory, InventoryItem item, int quantity, LocalDate date)
                     throws MediStockException {
@@ -185,6 +180,7 @@ public class Ui {
         System.out.printf("Batch of %d %s, expiring on %3$tF %n has been successfully to" +
                 " the inventory!%n", quantity, itemName, date);
         printLine();
+        System.out.println(String.format("Stock of %s is now:", itemName));
         printItemDetails(inventory, item);
         printLine();
     }

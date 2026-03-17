@@ -34,12 +34,13 @@ date and stock health status.
 * **Example Output:**
 
     ```text
-    Current Pharmaceutical Inventory: 
     ____________________________________________________________
+    Current Pharmaceutical Inventory: 
     1. Paracetamol 500mg 
           Total: 300 Tablets 
           Earliest Exp: 2030-09-30
           Status: Healthy
+  
     2. Vyvanse 70mg
           Total: 60 Tablets 
           Earliest Exp: 2028-06-07
@@ -53,9 +54,9 @@ Removes a task from your list permanently.
 * **Example:** `delete n/Vyvanse 70mg` or `delete i/2`
 * **Example Output:**
 
-    ```text
-    The following Pharmaceutical has been deleted   
+    ```text 
     ____________________________________________________________
+    The following Pharmaceutical has been deleted   
     2. Vyvanse 70mg
      Total: 60 Tablets
      Earliest Exp: 2028-06-07
@@ -67,7 +68,7 @@ Removes a task from your list permanently.
 Adds a batch of a specific item to the inventory. 
 
 * **Format:** `batch n/NAME q/QUANTITY d/EXPIRY_DATE` <br>
-* **Example:** `batch n/Vyvanse 70mg q/200 q/2028-06-07`
+* **Example:** `batch n/Vyvanse 70mg q/200 d/2028-06-07`
 * **Example Output:**
 
     ```text
