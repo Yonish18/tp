@@ -15,13 +15,12 @@ public class Storage {
     }
     /**
      * Saves newly created Item to data.txt
-     * @param item the InventoryItem, to be saved
+     * @param data the data to be saved
      * @throws IOException if an Error occurs while reading the file
      */
-
-    public void saveItem(Storable data) throws IOException {
+    public void saveToFile(Storable data) throws IOException {
         FileWriter fw = new FileWriter(filePath.toFile(), true);
-        fw.write(data.toFileFormat());
+        fw.write(data.toFileFormat() + System.lineSeparator());
         fw.close();
     }
 }

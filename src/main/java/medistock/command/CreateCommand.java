@@ -3,7 +3,10 @@ package medistock.command;
 import medistock.exception.MediStockException;
 import medistock.inventory.Inventory;
 import medistock.inventory.InventoryItem;
+import medistock.storage.Storage;
 import medistock.ui.Ui;
+
+import java.io.IOException;
 
 public class CreateCommand extends Command {
     private final String name;
@@ -17,9 +20,14 @@ public class CreateCommand extends Command {
     }
 
     @Override
-    public void execute(Inventory inventory, Ui ui) throws MediStockException {
-        InventoryItem item = new InventoryItem(name, unit, minimumThreshold);
-        inventory.addItem(item);
-        ui.printCreate(name,unit,minimumThreshold);
+    public void execute(Inventory inventory, Ui ui, Storage storage) throws MediStockException {
+        try {
+            InventoryItem item = new InventoryItem(name, unit, minimumThreshold);
+            inventory.addItem(item);
+            storage.saveToFile(item);
+            ui.printCreate(name, unit, minimumThreshold);
+        } catch (IOException e) {
+            throw new MediStockException("Failed to save to file: " + e.getMessage());
+        }
     }
 }

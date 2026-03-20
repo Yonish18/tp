@@ -4,8 +4,10 @@ import medistock.exception.MediStockException;
 import medistock.inventory.Batch;
 import medistock.inventory.Inventory;
 import medistock.inventory.InventoryItem;
+import medistock.storage.Storage;
 import medistock.ui.Ui;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class BatchCommand extends Command {
@@ -20,17 +22,21 @@ public class BatchCommand extends Command {
     }
 
     @Override
-    public void execute(Inventory inventory, Ui ui) throws MediStockException {
+    public void execute(Inventory inventory, Ui ui, Storage storage) throws MediStockException {
 
         if (!inventory.hasItem(this.name)) {
             throw new MediStockException("Item '" + this.name + "' does not exist in inventory." +
                             " Please add the item first.");
         }
-
-        InventoryItem item = inventory.getItem(name);
-        int batchNumber = item.getBatchQuantity() + 1;
-        Batch newBatch = new Batch(batchNumber, quantity, expiryDate);
-        item.addBatch(newBatch);
-        ui.printBatch(inventory, item, quantity, expiryDate);
+        try {
+            InventoryItem item = inventory.getItem(name);
+            int batchNumber = item.getBatchQuantity() + 1;
+            Batch newBatch = new Batch(batchNumber, quantity, expiryDate);
+            item.addBatch(newBatch);
+            ui.printBatch(inventory, item, quantity, expiryDate);
+            storage.saveToFile(newBatch);
+        } catch (IOException e) {
+            throw new MediStockException("Failed to save to file: " + e.getMessage());
+        }
     }
 }

@@ -52,7 +52,9 @@ public class Batch implements Storable {
 
     @Override
     public String toFileFormat() {
-        return String.format("No. %d | Quant: %s | Expiry: %t %n", this.batchNumber, this.quantity, this.expiryDate);
+        return String.format("No. %d | Quant: %s | Expiry: %tF", this.batchNumber, this.quantity, this.expiryDate);
     }
+
+
 
 }

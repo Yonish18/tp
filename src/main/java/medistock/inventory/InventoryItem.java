@@ -183,14 +183,11 @@ public class InventoryItem implements Storable {
     }
 
     @Override
-    public String toFileFormat(){
+    public String toFileFormat() {
         String descriptionLine = String.format("Name: %s (%s) | Min: %d", this.name, this.unit, this.minimumThreshold);
-        StringBuilder batchLine = new StringBuilder(String.format("[Batches] %n"));
-        for (Batch batch : batches) {
-            batchLine.append(batch.toFileFormat());
-        }
-        return descriptionLine + batchLine;
+        return descriptionLine + System.lineSeparator() + "[Batches]";
     }
+
 
     /**
      * Returns whether the current quantity is below the minimum threshold.

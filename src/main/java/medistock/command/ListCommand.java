@@ -2,6 +2,7 @@ package medistock.command;
 
 import medistock.exception.MediStockException;
 import medistock.inventory.Inventory;
+import medistock.storage.Storage;
 import medistock.ui.Ui;
 
 /**
@@ -17,7 +18,7 @@ public class ListCommand extends Command {
      * @throws MediStockException If an error occurs during execution.
      */
     @Override
-    public void execute(Inventory inventory, Ui ui) throws MediStockException {
+    public void execute(Inventory inventory, Ui ui, Storage storage) throws MediStockException {
         ui.showInventoryList(inventory);
     }
 }
