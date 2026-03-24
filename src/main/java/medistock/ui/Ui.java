@@ -150,7 +150,7 @@ public class Ui {
         printLine();
     }
 
-    public void printSpacing(){
+    public void printSpacing() {
         System.out.print("    ");
     }
 
@@ -160,8 +160,7 @@ public class Ui {
         System.out.println(quantity + " " + unit);
     }
 
-    public void printItemDetails(Inventory inventory, InventoryItem item)
-                    throws MediStockException {
+    public void printItemDetails(Inventory inventory, InventoryItem item) throws MediStockException {
         String itemName = item.getName();
         System.out.print(String.format("%d. %s (Min: %d) %n", getItemIndex(inventory, itemName),
                         itemName,item.getMinimumThreshold()));
@@ -173,7 +172,7 @@ public class Ui {
     }
 
     public void printBatch(Inventory inventory, InventoryItem item, int quantity, LocalDate date)
-                    throws MediStockException {
+            throws MediStockException {
 
         String itemName = item.getName();
 
