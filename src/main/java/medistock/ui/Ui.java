@@ -24,6 +24,9 @@ public class Ui {
 
     public static final String WITHDRAW_FORMAT = "Format: withdraw n/NAME q/QUANTITY";
 
+    public static final String REMOVE_EXPIRED_FORMAT =
+            "Format: remove-expired or remove-expired n/NAME";
+
     public static final String ERROR_MISSING_KEYWORD = "Missing name of the item you want to find.";
 
     private static final String EXIT_MESSAGE = "Inventory saved\nThank you for using MediStock, have a nice day!";
@@ -186,6 +189,29 @@ public class Ui {
         System.out.printf("Product deleted:" + deletedItem.getName() + " (" + deletedItem.getUnit() + ")\n"
                 + "Minimum threshold: "
                 + deletedItem.getMinimumThreshold() + "%n");
+        printLine();
+    }
+
+    public void printRemoveExpired(int count) {
+        printLine();
+        if (count == 0) {
+            System.out.println("No expired batches found.");
+        } else {
+            System.out.printf("Removed %d expired batch(es) "
+                    + "from all items.%n", count);
+        }
+        printLine();
+    }
+
+    public void printRemoveExpired(String name, int count) {
+        printLine();
+        if (count == 0) {
+            System.out.printf("No expired batches found for "
+                    + "%s.%n", name);
+        } else {
+            System.out.printf("Removed %d expired batch(es) "
+                    + "from %s.%n", count, name);
+        }
         printLine();
     }
 

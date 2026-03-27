@@ -32,7 +32,7 @@ public class FindCommand extends Command {
      */
     @Override
     public void execute(Inventory inventory, Ui ui) throws MediStockException {
-        List<InventoryItem> matchedItems =inventory.findItem(keyword);
+        List<InventoryItem> matchedItems = inventory.findItem(keyword);
         ui.showFindList(inventory, matchedItems);
     }
 }

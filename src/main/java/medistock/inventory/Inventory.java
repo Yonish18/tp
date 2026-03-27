@@ -162,6 +162,14 @@ public class Inventory {
         return new ArrayList<>(items.values());
     }
 
+    public int removeAllExpiredBatches() {
+        int total = 0;
+        for (InventoryItem item : items.values()) {
+            total += item.removeExpiredBatches();
+        }
+        return total;
+    }
+
     public List<InventoryItem> getExpiredBatches() {
         List<InventoryItem> expired = new ArrayList<>();
         for (InventoryItem item : items.values()) {

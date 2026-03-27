@@ -179,13 +179,15 @@ public class InventoryItem {
         // Earliest first
         batches.sort(Comparator.comparing(Batch::getExpiryDate));
 
-        // Mark all expired batches
+        // Mark and warn about all expired batches
         for (Batch batch : batches) {
-            if (!batch.isExpired() && batch.getExpiryDate().isBefore(today)) {
+            if (batch.getExpiryDate().isBefore(today)) {
+                if (!batch.isExpired()) {
+                    batch.markExpired();
+                }
                 System.out.println("Please remove expired batch "
                         + batch.getBatchNumber() + " (expired: "
                         + batch.getExpiryDate() + ")");
-                batch.markExpired();
             }
         }
     }
@@ -197,6 +199,14 @@ public class InventoryItem {
      */
     public boolean isLowStock() {
         return getQuantity() < minimumThreshold;
+    }
+
+    public int removeExpiredBatches() {
+        sortAndMarkExpiredBatches();
+        List<Batch> expired = getExpiredBatches();
+        int count = expired.size();
+        batches.removeAll(expired);
+        return count;
     }
 
     public List<Batch> getExpiredBatches() {

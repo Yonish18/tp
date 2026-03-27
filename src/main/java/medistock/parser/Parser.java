@@ -9,6 +9,7 @@ import medistock.command.ExitCommand;
 import medistock.command.FindCommand;
 import medistock.command.HelpCommand;
 import medistock.command.ListCommand;
+import medistock.command.RemoveExpiredCommand;
 import medistock.command.WithdrawCommand;
 import medistock.exception.MediStockException;
 import medistock.ui.Ui;
@@ -42,6 +43,10 @@ public class Parser {
             return new FindCommand(keyword);
         } else if (text.equals("help")) {
             return new HelpCommand();
+        } else if (text.equals("remove-expired")) {
+            return new RemoveExpiredCommand();
+        } else if (text.startsWith("remove-expired n/")) {
+            return prepareRemoveExpired(text);
         } else {
             throw new MediStockException("Unknown command.");
         }
@@ -260,5 +265,21 @@ public class Parser {
             throw new MediStockException(Ui.ERROR_MISSING_KEYWORD);
         }
         return keyword;
+    }
+
+    private static Command prepareRemoveExpired(String text)
+            throws MediStockException {
+        int nameIndex = text.indexOf("n/");
+        if (nameIndex == -1) {
+            throw new MediStockException(
+                    "Invalid format. "
+                    + Ui.REMOVE_EXPIRED_FORMAT);
+        }
+        String name = getArgument(text, nameIndex);
+        if (name.isEmpty()) {
+            throw new MediStockException(
+                    "Name must not be empty.");
+        }
+        return new RemoveExpiredCommand(name);
     }
 }
