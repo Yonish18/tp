@@ -15,7 +15,10 @@ public class LogsCentre {
         try {
             FileHandler fileHandler = new FileHandler("medistock.log", true);
             fileHandler.setFormatter(new SimpleFormatter());
-            Logger.getLogger("medistock").addHandler(fileHandler);
+            
+            Logger rootLogger = Logger.getLogger("medistock");
+            rootLogger.addHandler(fileHandler);
+            rootLogger.setUseParentHandlers(false); // Disable console output
         } catch (IOException e) {
             logger.warning("Failed to set up file logging: " + e.getMessage());
         }
