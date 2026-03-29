@@ -6,11 +6,14 @@ import medistock.inventory.InventoryItem;
 import medistock.ui.Ui;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Command to find a stock item in the inventory.
  */
 public class FindCommand extends Command {
+    private static final Logger logger = Logger.getLogger(FindCommand.class.getName());
     private final String keyword;
 
     /**
@@ -32,7 +35,13 @@ public class FindCommand extends Command {
      */
     @Override
     public void execute(Inventory inventory, Ui ui) throws MediStockException {
+        logger.log(Level.INFO, "Executing find command with keyword: " + keyword);
+        
         List<InventoryItem> matchedItems = inventory.findItem(keyword);
+        
+        logger.log(Level.FINE, "Search returned " + matchedItems.size() + " matching item(s)");
         ui.showFindList(inventory, matchedItems);
+        
+        logger.log(Level.INFO, "Find command completed successfully");
     }
 }
