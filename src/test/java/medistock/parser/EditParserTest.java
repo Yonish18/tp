@@ -59,6 +59,54 @@ public class EditParserTest {
     }
 
     @Test
+    void parseCommand_emptyOldName_throwsException() {
+        String input = "edit o/ n/Aspirin 500mg";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_emptyNewName_throwsException() {
+        String input = "edit o/Aspirin n/ u/Capsules";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_emptyNewUnit_throwsException() {
+        String input = "edit o/Aspirin u/ min/20";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_emptyNewMin_throwsException() {
+        String input = "edit o/Aspirin min/";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_nonNumericMin_throwsException() {
+        String input = "edit o/Aspirin min/abc";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_nonPositiveMin_throwsException() {
+        String input = "edit o/Aspirin min/0";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
     void parseCommand_wrongTagOrder_throwsException() {
         String input = "edit n/Aspirin 500mg o/Aspirin";
 
