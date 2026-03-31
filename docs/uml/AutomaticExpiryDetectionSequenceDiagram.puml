@@ -1,0 +1,44 @@
+@startuml
+title Automatic Expiry Detection Sequence Diagram
+
+participant ":Command" as Cmd
+participant ":InventoryItem" as Item
+participant ":Batch" as Batch
+
+note over Cmd : Triggered by withdraw,\nbatch, list, or\nremove-expired commands
+
+Cmd -> Item : sortAndMarkExpiredBatches()
+activate Item
+
+Item -> Item : batches.sort(by expiryDate)
+activate Item
+deactivate Item
+
+loop each batch in batches
+    Item -> Batch : getExpiryDate()
+    activate Batch
+    Batch --> Item : expiryDate:LocalDate
+    deactivate Batch
+
+    alt expiryDate is before today
+        Item -> Batch : isExpired()
+        activate Batch
+        Batch --> Item : expired:boolean
+        deactivate Batch
+
+        alt not already marked expired
+            Item -> Batch : markExpired()
+            activate Batch
+            deactivate Batch
+        end
+
+        Item -> Item : print("Please remove expired batch...")
+        activate Item
+        deactivate Item
+    end
+end
+
+Item --> Cmd : return
+deactivate Item
+
+@enduml

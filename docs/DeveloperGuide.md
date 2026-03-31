@@ -46,6 +46,43 @@ This developer guide was inspired by
 
 ### Feature: Withdraw Stock
 
+![WithdrawCommand_SequenceDiagram](diagrams/WithdrawCommandSequenceDiagram.png)
+
+**Purpose:** Withdraw a specified quantity of an item from the inventory, depleting from the earliest-expiring batches first.
+
+**Command word:** `withdraw`
+
+**Format:**
+```
+withdraw n/<name> q/<quantity>
+```
+
+Finds the item by name, sorts its batches by expiry date (earliest first), marks any expired batches, then deducts the requested quantity from the remaining non-expired batches. Batches that reach zero quantity are removed. If the withdrawal spans multiple batches, earlier batches are fully depleted before moving to the next.
+
+**Behaviour:**
+1. Parses the user input to extract the item name and quantity.
+2. Validates that the name and quantity are not empty, that quantity is a valid positive integer, and that `n/` appears before `q/`.
+3. Calls `inventory.getItem(name)` to retrieve the corresponding `InventoryItem`.
+4. Calls `item.withdraw(quantity)` which:
+   - Sorts batches by expiry date (earliest first) and marks expired batches.
+   - Checks that total available (non-expired) quantity is sufficient.
+   - Deducts from non-expired batches in order, removing fully depleted batches.
+5. Calls `ui.printWithdraw(quantity, item)` to display the withdrawn amount and the updated stock.
+6. Records the withdrawal in the command history.
+
+**Failure cases & messages:**
+- If `n/` or `q/` is missing: "Invalid withdraw format. Format: withdraw n/NAME q/QUANTITY"
+- If `n/` does not appear before `q/`: "Use correct format: Format: withdraw n/NAME q/QUANTITY"
+- If name or quantity is empty: "Name and quantity must not be empty."
+- If quantity is not a valid number: "Quantity must be a valid number."
+- If quantity is zero or negative: "Quantity must be greater than 0."
+- If item does not exist in inventory: "Product not found: \<name\>"
+- If insufficient non-expired stock: "Insufficient stock for \<name\>. Available: \<available\>, Requested: \<quantity\>"
+
+**Logging:**
+- WARNING when attempting to get a non-existent item.
+- FINE on successful item retrieval.
+
 ### Feature: Delete Item by Name
 
 ![DeleteCommandName_SequenceDiagram](diagrams/DeleteCommandName_SequenceDiagram.png)
@@ -153,7 +190,65 @@ Searches all inventory items for names containing the specified keyword (case-in
 
 ### Feature: Remove Expired Batches
 
+![RemoveExpiredCommand_SequenceDiagram](diagrams/RemoveExpiredCommandSequenceDiagram.png)
+
+**Purpose:** Manually remove all expired batches from the inventory, either across all items or for a specific item by name.
+
+**Command word:** `remove-expired`
+
+**Format:**
+```
+remove-expired
+```
+or
+```
+remove-expired n/<name>
+```
+
+When run without arguments, iterates through every item in the inventory, sorts batches by expiry date, marks expired ones, and removes them. When run with `n/<name>`, removes expired batches only from the specified item.
+
+**Behaviour:**
+1. Parser checks if the input is `remove-expired` (no arguments) or `remove-expired n/<name>`.
+2. If no name is provided, creates a `RemoveExpiredCommand` with `name = null`.
+3. If a name is provided, validates that the name is not empty and creates a `RemoveExpiredCommand` with the given name.
+4. During execution:
+   - **Without name:** Calls `inventory.removeAllExpiredBatches()` which iterates through all items, calling `item.removeExpiredBatches()` on each. Each item sorts its batches by expiry date, marks expired batches, collects them, and removes them. Returns the total count of removed batches. Calls `ui.printRemoveExpired(count)` to display the result.
+   - **With name:** Calls `inventory.hasItem(name)` to check the item exists, then `inventory.getItem(name)` to retrieve it. Calls `item.removeExpiredBatches()` to remove expired batches from that specific item. Calls `ui.printRemoveExpired(name, count)` to display the result.
+
+**Failure cases & messages:**
+- If `n/` is present but name is empty: "Name must not be empty."
+- If item does not exist in inventory: "Product not found: \<name\>"
+- If no expired batches found (all items): "No expired batches found."
+- If no expired batches found (specific item): "No expired batches found for \<name\>."
+
+**Logging:**
+- WARNING when attempting to get a non-existent item.
+
 ### Feature: Automatic Expiry Detection
+
+![AutomaticExpiryDetection_SequenceDiagram](diagrams/AutomaticExpiryDetectionSequenceDiagram.png)
+
+**Purpose:** Automatically detect and flag expired batches whenever inventory data is accessed, ensuring users are always warned about expired stock without needing to run a manual command.
+
+This is not a user-invoked command. It is an internal mechanism triggered automatically during the execution of other commands.
+
+**Trigger points:**
+- `withdraw` command — before deducting stock
+- `batch` command — after adding a new batch
+- `list` command — when printing item details
+- `remove-expired` command — before collecting expired batches
+
+**Behaviour:**
+1. When any of the above commands execute, `item.sortAndMarkExpiredBatches()` is called on the relevant `InventoryItem`.
+2. `sortAndMarkExpiredBatches()` performs the following:
+   - Sorts all batches by expiry date (earliest first) using `Comparator.comparing(Batch::getExpiryDate)`.
+   - Iterates through each batch and checks if its expiry date is before today (`LocalDate.now()`).
+   - If a batch is expired and not already marked, calls `batch.markExpired()` to set its `isExpired` flag to `true`.
+   - Prints a warning message for each expired batch: "Please remove expired batch \<batchNumber\> (expired: \<expiryDate\>)".
+3. Other methods such as `getQuantity()`, `getBatchQuantity()`, and `getActiveBatches()` filter out expired batches (where `isExpired == true`), ensuring expired stock is excluded from active totals and displays.
+
+**Design rationale:**
+Rather than requiring the user to manually check for expired stock, this mechanism ensures that expired batches are surfaced as warnings during routine operations (listing, withdrawing, adding batches). This reduces the risk of dispensing expired medicine.
 
 ### Feature: Low Stock Warning
 
