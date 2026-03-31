@@ -2,6 +2,7 @@ package medistock.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -99,5 +100,42 @@ public class EditCommandTest {
         String fileContents = Files.readString(filePath);
         assertTrue(fileContents.contains("Item: Aspirin 500mg (Tablets) | 10"));
         assertTrue(fileContents.contains("1 | 20 | "));
+    }
+
+    @Test
+    void execute_renameToExistingItem_throwsException() throws MediStockException {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
+        List<String> histories = new ArrayList<>();
+        inventory.addItem(new InventoryItem("Aspirin", "Tablets", 10));
+        inventory.addItem(new InventoryItem("Panadol", "Capsules", 20));
+
+        EditCommand command = new EditCommand("Aspirin", "Panadol", null, null);
+
+        assertThrows(MediStockException.class,
+                () -> command.execute(inventory, ui, storage, histories));
+        assertTrue(inventory.hasItem("Aspirin"));
+        assertTrue(inventory.hasItem("Panadol"));
+        assertEquals(0, histories.size());
+    }
+
+    @Test
+    void execute_renameToSameNormalizedName_succeeds() throws MediStockException {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
+        List<String> histories = new ArrayList<>();
+        InventoryItem item = new InventoryItem("Aspirin", "Tablets", 10);
+        item.addBatch(new Batch(1, 15, LocalDate.now().plusDays(30)));
+        inventory.addItem(item);
+
+        EditCommand command = new EditCommand("Aspirin", "  ASPIRIN  ", null, null);
+        command.execute(inventory, ui, storage, histories);
+
+        InventoryItem updatedItem = inventory.getItem("aspirin");
+        assertEquals("  ASPIRIN  ", updatedItem.getName());
+        assertEquals(15, updatedItem.getQuantity());
+        assertEquals(1, histories.size());
     }
 }

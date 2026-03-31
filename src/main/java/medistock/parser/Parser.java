@@ -99,6 +99,14 @@ public class Parser {
         return nextIndex;
     }
 
+    private static int getPrefixedIndex(String text, String prefix) {
+        int index = text.indexOf(" " + prefix);
+        if (index == -1) {
+            return -1;
+        }
+        return index + 1;
+    }
+
     /**
      * Parses the "batch" command input and prepares a BatchCommand for execution.
      *
@@ -187,10 +195,10 @@ public class Parser {
     }
 
     private static Command prepareEdit(String text) throws MediStockException {
-        int oldNameIndex = text.indexOf("o/");
-        int nameIndex = text.indexOf("n/");
-        int unitIndex = text.indexOf("u/");
-        int minIndex = text.indexOf("min/");
+        int oldNameIndex = getPrefixedIndex(text, "o/");
+        int nameIndex = getPrefixedIndex(text, "n/");
+        int unitIndex = getPrefixedIndex(text, "u/");
+        int minIndex = getPrefixedIndex(text, "min/");
 
         if (oldNameIndex == -1) {
             throw new MediStockException("Invalid edit format. " + Ui.EDIT_FORMAT);
