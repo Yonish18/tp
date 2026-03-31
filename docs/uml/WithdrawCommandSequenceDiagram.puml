@@ -1,0 +1,86 @@
+@startuml
+title WithdrawCommand Sequence Diagram
+
+actor User
+participant ":Medistock" as App
+participant ":Ui" as Ui
+participant ":Parser" as Parser
+participant ":WithdrawCommand" as WithdrawCommand
+participant ":Inventory" as Inventory
+participant ":InventoryItem" as Item
+
+User -> App : run "withdraw n/<name> q/<quantity>"
+activate App
+
+App -> Ui : getInput()
+activate Ui
+Ui --> App : input:String
+deactivate Ui
+
+App -> Parser : parseCommand(input:String)
+activate Parser
+
+Parser -> Parser : prepareWithdraw(text:String)
+activate Parser
+Parser --> Parser : name:String, quantity:int
+deactivate Parser
+
+create WithdrawCommand
+Parser -> WithdrawCommand : new WithdrawCommand(name:String, quantity:int)
+activate WithdrawCommand
+WithdrawCommand --> Parser : command:WithdrawCommand
+deactivate WithdrawCommand
+
+Parser --> App : command:WithdrawCommand
+deactivate Parser
+
+App -> WithdrawCommand : execute(inventory:Inventory, ui:Ui)
+activate WithdrawCommand
+
+WithdrawCommand -> Inventory : getItem(name:String)
+activate Inventory
+Inventory --> WithdrawCommand : item:InventoryItem
+deactivate Inventory
+
+WithdrawCommand -> Item : withdraw(quantity:int)
+activate Item
+
+Item -> Item : sortAndMarkExpiredBatches()
+activate Item
+deactivate Item
+
+alt getQuantity() < quantity
+    Item --> WithdrawCommand : throw MediStockException("Insufficient stock...")
+else sufficient stock
+    loop remaining > 0 and batches left
+        alt batch is expired
+            Item -> Item : skip batch
+            activate Item
+            deactivate Item
+        else batch not expired
+            alt batch quantity <= remaining
+                Item -> Item : remove batch
+                activate Item
+                deactivate Item
+            else batch quantity > remaining
+                Item -> Item : reduceQuantity(remaining)
+                activate Item
+                deactivate Item
+            end
+        end
+    end
+    Item --> WithdrawCommand : return
+end
+deactivate Item
+
+WithdrawCommand -> Ui : printWithdraw(quantity:int, item:InventoryItem)
+activate Ui
+Ui --> WithdrawCommand : return
+deactivate Ui
+
+WithdrawCommand --> App : return
+deactivate WithdrawCommand
+
+App --> User : Stock withdrawn
+deactivate App
+@enduml

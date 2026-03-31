@@ -1,0 +1,104 @@
+@startuml
+title RemoveExpiredCommand Sequence Diagram
+
+actor User
+participant ":Medistock" as App
+participant ":Ui" as Ui
+participant ":Parser" as Parser
+participant ":RemoveExpiredCommand" as Cmd
+participant ":Inventory" as Inventory
+participant ":InventoryItem" as Item
+
+User -> App : run "remove-expired" or\n"remove-expired n/<name>"
+activate App
+
+App -> Ui : getInput()
+activate Ui
+Ui --> App : input:String
+deactivate Ui
+
+App -> Parser : parseCommand(input:String)
+activate Parser
+
+alt input is "remove-expired"
+    create Cmd
+    Parser -> Cmd : new RemoveExpiredCommand()
+    activate Cmd
+    Cmd --> Parser : command:RemoveExpiredCommand
+    deactivate Cmd
+else input is "remove-expired n/<name>"
+    Parser -> Parser : prepareRemoveExpired(text:String)
+    activate Parser
+    Parser --> Parser : name:String
+    deactivate Parser
+
+    create Cmd
+    Parser -> Cmd : new RemoveExpiredCommand(name:String)
+    activate Cmd
+    Cmd --> Parser : command:RemoveExpiredCommand
+    deactivate Cmd
+end
+
+Parser --> App : command:RemoveExpiredCommand
+deactivate Parser
+
+App -> Cmd : execute(inventory:Inventory, ui:Ui)
+activate Cmd
+
+alt name is null (all items)
+    Cmd -> Inventory : removeAllExpiredBatches()
+    activate Inventory
+
+    loop each item in inventory
+        Inventory -> Item : removeExpiredBatches()
+        activate Item
+
+        Item -> Item : sortAndMarkExpiredBatches()
+        activate Item
+        deactivate Item
+
+        Item --> Inventory : count:int
+        deactivate Item
+    end
+
+    Inventory --> Cmd : totalCount:int
+    deactivate Inventory
+
+    Cmd -> Ui : printRemoveExpired(count:int)
+    activate Ui
+    Ui --> Cmd : return
+    deactivate Ui
+
+else name is provided (specific item)
+    Cmd -> Inventory : hasItem(name:String)
+    activate Inventory
+    Inventory --> Cmd : exists:boolean
+    deactivate Inventory
+
+    Cmd -> Inventory : getItem(name:String)
+    activate Inventory
+    Inventory --> Cmd : item:InventoryItem
+    deactivate Inventory
+
+    Cmd -> Item : removeExpiredBatches()
+    activate Item
+
+    Item -> Item : sortAndMarkExpiredBatches()
+    activate Item
+    deactivate Item
+
+    Item --> Cmd : count:int
+    deactivate Item
+
+    Cmd -> Ui : printRemoveExpired(name:String, count:int)
+    activate Ui
+    Ui --> Cmd : return
+    deactivate Ui
+end
+
+Cmd --> App : return
+deactivate Cmd
+
+App --> User : Expired batches removed
+deactivate App
+@enduml
