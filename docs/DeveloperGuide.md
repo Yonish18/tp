@@ -28,6 +28,10 @@
 
 This developer guide was inspired by 
 (https://se-education.org/addressbook-level4/DeveloperGuide.html#design)
+<br>
+Tools that helped with the creation of the MediStocks logo: <br>
+(https://www.asciiart.eu/text-to-ascii-art) <br>
+(https://www.asciiart.eu/image-to-ascii)
 
 ## Design
 
@@ -93,8 +97,7 @@ Finds the specified item using its current name, applies the requested updates, 
 - FINE on successful item retrieval.
 
 ### Feature: Add Batch
-
-#<SEQUENCE DIAGRAM>
+![BatchCommand_SequenceDiagram](diagrams/BatchCommand_SequenceDiagram.jpg)
 **Purpose:** Add a new batch of stock to an existing medication or inventory item,
 tracking its specific quantity and expiry date.
 
