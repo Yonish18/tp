@@ -11,6 +11,7 @@
     - [Storage Component](#storage-component)
 - [Implementation](#implementation)
     - [Feature: Create Item](#feature-create-item)
+    - [Feature: Edit Item](#feature-edit-item)
     - [Feature: Add Batch](#feature-add-batch)
     - [Feature: Withdraw Stock](#feature-withdraw-stock)
     - [Feature: Delete Item by Name](#feature-delete-item-by-name)
@@ -41,6 +42,48 @@ This developer guide was inspired by
 ## Implementation
 
 ### Feature: Create Item
+
+### Feature: Edit Item
+
+![EditCommand_SequenceDiagram](diagrams/EditCommandSequenceDiagram.png)
+
+**Purpose:** Edit an existing item in the inventory by updating its name, unit, minimum threshold, or a combination of these fields.
+
+**Command word:** `edit`
+
+**Format:**
+```
+edit o/<old_name> [n/<new_name>] [u/<new_unit>] [min/<new_threshold>]
+```
+
+Finds the specified item using its current name, applies the requested updates, preserves its existing batches, and replaces the original item in the inventory with the updated version.
+
+**Behaviour:**
+1. Parses the user input to extract the old item name and the fields to update.
+2. Validates that `o/` is present and that at least one of `n/`, `u/`, or `min/` is provided.
+3. Calls `inventory.editItem(...)` to retrieve the current `InventoryItem` and determine the updated values.
+4. If a new name is provided, checks that it does not conflict with another existing item in the inventory.
+5. Creates an updated `InventoryItem` with the new metadata while preserving the existing batches, then replaces the old item entry in the inventory.
+6. Calls `storage.saveToFile(inventory)` to persist the updated inventory.
+7. Calls `ui.printEdit(oldName, updatedItem)` to display the updated item details.
+8. Records the edit in the command history.
+
+**Failure cases & messages:**
+- If `o/` is missing: "Invalid edit format. Format: edit o/OLD_NAME [n/NEW_NAME] [u/NEW_UNIT] [min/NEW_THRESHOLD]"
+- If no fields are provided to update: "Edit command requires at least one field to update."
+- If the argument order is invalid: "Use edit format: Format: edit o/OLD_NAME [n/NEW_NAME] [u/NEW_UNIT] [min/NEW_THRESHOLD]"
+- If the old item name is empty: "Old item name must not be empty."
+- If the new item name is empty: "New item name must not be empty."
+- If the new unit is empty: "New unit must not be empty."
+- If the new minimum threshold is empty: "New minimum threshold must not be empty."
+- If the new minimum threshold is not a valid number: "New minimum threshold must be a valid number."
+- If the new minimum threshold is zero or negative: "New minimum threshold must be greater than 0."
+- If the item does not exist in inventory: "Product not found: \<old_name\>"
+- If the new name already exists in inventory: "Product already exists: \<new_name\>"
+
+**Logging:**
+- WARNING when attempting to get a non-existent item.
+- FINE on successful item retrieval.
 
 ### Feature: Add Batch
 
