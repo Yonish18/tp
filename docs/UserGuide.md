@@ -109,26 +109,14 @@ Shows medications whose names contain the given keyword.
 ### Deleting a Medication Class: `delete`
 Removes an entire Medication Class from the inventory permanently.
 * **Format:** `delete n/NAME` or `delete i/INDEX`
-* **Example:** `delete n/Vyvanse 70mg` or `delete i/2`
+* **Example:** `delete n/Paracetamol 500mg` or `delete i/2`
 * **Example Output:**
 
     ```text 
     ____________________________________________________________
-    list
+    Product deleted: Paracetamol 500mg (Tablets)
     ____________________________________________________________
-    Current Active Pharmaceutical Inventory:
-    1. Paracetamol 500mg (Min: 10)
-     Total: 0 pills
-     Status: Critical
-  
-    2. Vyvanse 70mg (Min: 10)
-        Batch 1: 200 tablets, Exp: 2028-06-07
-        Total: 200 tablets
-        Status: Healthy
-    ____________________________________________________________
-    Current Expired Pharmaceutical Inventory:
-    No expired batches found.
-    ____________________________________________________________
+    ```
 
 ### Adding a Batch: `batch`
 Adds a batch to an existing medication entry.
