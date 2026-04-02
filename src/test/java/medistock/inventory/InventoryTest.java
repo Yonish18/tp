@@ -33,18 +33,6 @@ class InventoryTest {
     }
 
     @Test
-    void hasItem() {
-    }
-
-    @Test
-    void getItem() {
-    }
-
-    @Test
-    void getSize() {
-    }
-
-    @Test
     void deleteItem_existingItem_removesItem() throws MediStockException {
         Inventory inventory = new Inventory();
 
