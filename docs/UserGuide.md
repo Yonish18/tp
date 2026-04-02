@@ -195,6 +195,23 @@ Removes expired batches from all items or from a specific medication.
 Shows the built-in list of available commands.
 
 * **Format:** `help`
+* **Example Output:**
+
+    ```text
+    ____________________________________________________________
+    Available commands:
+    1. list
+    2. create Format: create n/NAME u/UNIT min/THRESHOLD
+    3. edit Format: edit o/OLD_NAME [n/NEW_NAME] [u/NEW_UNIT] [min/NEW_THRESHOLD]
+    4. delete Format: delete 'n/NAME' or 'i/INDEX'
+    5. batch Format: batch n/NAME q/QUANTITY d/EXPIRY_DATE(YYYY-MM-DD)
+    6. withdraw Format: withdraw n/NAME q/QUANTITY
+    7. find Format: find <keyword>
+    8. remove-expired Format: remove-expired or remove-expired n/NAME
+    9. history
+    10. exit
+    ____________________________________________________________
+    ```
 
 ### Exiting the Program: `exit`, `quit`
 Saves the inventory and exits the application.
