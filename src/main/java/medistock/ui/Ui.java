@@ -18,6 +18,9 @@ public class Ui {
 
     public static final String CREATE_FORMAT = "Format: create n/NAME u/UNIT min/THRESHOLD";
 
+    public static final String EDIT_FORMAT =
+            "Format: edit o/OLD_NAME [n/NEW_NAME] [u/NEW_UNIT] [min/NEW_THRESHOLD]";
+
     public static final String FIND_FORMAT = "Format: find <keyword>";
 
     public static final String DELETE_FORMAT = "Format: delete 'n/NAME' or 'i/INDEX'";
@@ -208,6 +211,14 @@ public class Ui {
         printLine();
         System.out.printf("Product created:" + name + " (" + unit + ")\n" + "Minimum threshold: "
                 + minimumThreshold + "%n");
+        printLine();
+    }
+
+    public void printEdit(String oldName, InventoryItem updatedItem) {
+        printLine();
+        System.out.printf("Product updated: %s -> %s (%s)%n",
+                oldName, updatedItem.getName(), updatedItem.getUnit());
+        System.out.printf("Minimum threshold: %d%n", updatedItem.getMinimumThreshold());
         printLine();
     }
 

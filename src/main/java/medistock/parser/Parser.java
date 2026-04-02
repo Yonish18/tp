@@ -5,6 +5,7 @@ import medistock.command.Command;
 import medistock.command.CreateCommand;
 import medistock.command.DeleteCommandIndex;
 import medistock.command.DeleteCommandName;
+import medistock.command.EditCommand;
 import medistock.command.ExitCommand;
 import medistock.command.FindCommand;
 import medistock.command.HelpCommand;
@@ -27,6 +28,8 @@ public class Parser {
 
         if (text.startsWith("create ")) {
             return prepareCreate(text);
+        } else if (text.startsWith("edit ")) {
+            return prepareEdit(text);
         } else if (text.startsWith("batch")) {
             return prepareBatch(text);
         } else if (text.startsWith("withdraw")) {
@@ -84,6 +87,24 @@ public class Parser {
      */
     private static String getMinimum(String text, int minIndex) {
         return text.substring(minIndex + 4).trim();
+    }
+
+    private static int getNextIndex(String text, int currentIndex, int... indexes) {
+        int nextIndex = text.length();
+        for (int index : indexes) {
+            if (index > currentIndex && index < nextIndex) {
+                nextIndex = index;
+            }
+        }
+        return nextIndex;
+    }
+
+    private static int getPrefixedIndex(String text, String prefix) {
+        int index = text.indexOf(" " + prefix);
+        if (index == -1) {
+            return -1;
+        }
+        return index + 1;
     }
 
     /**
@@ -171,6 +192,83 @@ public class Parser {
             throw new MediStockException("Minimum threshold must be greater than 0.");
         }
         return new CreateCommand(name, unit, min);
+    }
+
+    private static Command prepareEdit(String text) throws MediStockException {
+        int oldNameIndex = getPrefixedIndex(text, "o/");
+        int nameIndex = getPrefixedIndex(text, "n/");
+        int unitIndex = getPrefixedIndex(text, "u/");
+        int minIndex = getPrefixedIndex(text, "min/");
+
+        if (oldNameIndex == -1) {
+            throw new MediStockException("Invalid edit format. " + Ui.EDIT_FORMAT);
+        }
+
+        if (nameIndex == -1 && unitIndex == -1 && minIndex == -1) {
+            throw new MediStockException("Edit command requires at least one field to update.");
+        }
+
+        if ((nameIndex != -1 && oldNameIndex > nameIndex)
+                || (unitIndex != -1 && oldNameIndex > unitIndex)
+                || (minIndex != -1 && oldNameIndex > minIndex)) {
+            throw new MediStockException("Use edit format: " + Ui.EDIT_FORMAT);
+        }
+
+        if (nameIndex != -1 && unitIndex != -1 && nameIndex > unitIndex) {
+            throw new MediStockException("Use edit format: " + Ui.EDIT_FORMAT);
+        }
+
+        if (nameIndex != -1 && minIndex != -1 && nameIndex > minIndex) {
+            throw new MediStockException("Use edit format: " + Ui.EDIT_FORMAT);
+        }
+
+        if (unitIndex != -1 && minIndex != -1 && unitIndex > minIndex) {
+            throw new MediStockException("Use edit format: " + Ui.EDIT_FORMAT);
+        }
+
+        String oldName = text.substring(oldNameIndex + 2,
+                getNextIndex(text, oldNameIndex, nameIndex, unitIndex, minIndex)).trim();
+        if (oldName.isEmpty()) {
+            throw new MediStockException("Old item name must not be empty.");
+        }
+
+        String newName = null;
+        String newUnit = null;
+        Integer newMinimumThreshold = null;
+
+        if (nameIndex != -1) {
+            newName = text.substring(nameIndex + 2,
+                    getNextIndex(text, nameIndex, unitIndex, minIndex)).trim();
+            if (newName.isEmpty()) {
+                throw new MediStockException("New item name must not be empty.");
+            }
+        }
+
+        if (unitIndex != -1) {
+            newUnit = text.substring(unitIndex + 2,
+                    getNextIndex(text, unitIndex, minIndex)).trim();
+            if (newUnit.isEmpty()) {
+                throw new MediStockException("New unit must not be empty.");
+            }
+        }
+
+        if (minIndex != -1) {
+            String minText = getMinimum(text, minIndex);
+            if (minText.isEmpty()) {
+                throw new MediStockException("New minimum threshold must not be empty.");
+            }
+            try {
+                newMinimumThreshold = Integer.parseInt(minText);
+            } catch (NumberFormatException e) {
+                throw new MediStockException("New minimum threshold must be a valid number.");
+            }
+
+            if (newMinimumThreshold <= 0) {
+                throw new MediStockException("New minimum threshold must be greater than 0.");
+            }
+        }
+
+        return new EditCommand(oldName, newName, newUnit, newMinimumThreshold);
     }
 
     /**
