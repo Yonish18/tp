@@ -34,10 +34,8 @@ public class Parser {
             return prepareBatch(text);
         } else if (text.startsWith("withdraw")) {
             return prepareWithdraw(text);
-        } else if (text.startsWith("delete n/")) {
-            return prepareDeleteName(text);
-        } else if (text.startsWith("delete i/")) {
-            return prepareDeleteIndex(text);
+        } else if (text.startsWith("delete")) {
+            return prepareDelete(text);
         } else if (text.equals("list")) {
             return new ListCommand();
         } else if (text.equals("history")) {
@@ -310,6 +308,15 @@ public class Parser {
         }
 
         return new WithdrawCommand(name, quantity);
+    }
+
+    private static Command prepareDelete(String text) throws MediStockException {
+        if (text.startsWith("delete n/")) {
+            return prepareDeleteName(text);
+        } else if (text.startsWith("delete i/")) {
+            return prepareDeleteIndex(text);
+        }
+        throw new MediStockException("Invalid delete format. " + Ui.DELETE_FORMAT);
     }
 
     private static Command prepareDeleteName(String text) throws MediStockException {
