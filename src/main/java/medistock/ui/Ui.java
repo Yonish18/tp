@@ -163,7 +163,7 @@ public class Ui {
             printLine();
             System.out.println("History of Stocks:");
             for (java.lang.String commandText : histories) {
-                System.out.println(itemIndex + ". " + commandText);;
+                System.out.println(itemIndex + ". " + commandText);
                 itemIndex++;
             }
             printLine();
