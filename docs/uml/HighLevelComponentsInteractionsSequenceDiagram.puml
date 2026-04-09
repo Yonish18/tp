@@ -1,0 +1,45 @@
+@startuml
+title Typical Command Sequence Diagram
+
+actor User
+participant ":MediStock" as App
+participant ":Parser" as Parser
+participant ":Command" as Command
+participant ":Inventory" as Inventory
+participant ":Ui" as Ui
+participant ":Storage" as Storage
+
+User -> App : enter command
+activate App
+
+App -> Parser : parseCommand(input)
+activate Parser
+Parser --> App : command
+deactivate Parser
+
+App -> Command : execute(inventory, ui, storage)
+activate Command
+
+Command -> Inventory : read / modify data
+activate Inventory
+Inventory --> Command : result
+deactivate Inventory
+
+Command -> Ui : show result / error
+activate Ui
+Ui --> Command : return
+deactivate Ui
+
+opt command modifies inventory
+    Command -> Storage : saveToFile(inventory)
+    activate Storage
+    Storage --> Command : success
+    deactivate Storage
+end
+
+Command --> App : return
+deactivate Command
+
+App --> User : display output
+deactivate App
+@enduml

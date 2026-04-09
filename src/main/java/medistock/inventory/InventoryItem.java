@@ -59,7 +59,7 @@ public class InventoryItem implements Storable {
     /**
      * Returns the amount of batches insides the item's stock
      *
-     * @return the quanity of batches
+     * @return the quantity of batches
      */
     public int getBatchQuantity() {
         int count = 0;

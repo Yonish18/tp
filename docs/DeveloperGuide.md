@@ -40,6 +40,8 @@ The Architecture Diagram below shows the high-level design of Medistock.
 
 How the architecture components interact:
 
+![TypicalCommandSequenceDiagram](diagrams/TypicalCommandSequenceDiagram.png)
+
 The sequence of interactions for a typical command, such as `withdraw n/paracetamol q/5`, is:
 
 1. `MediStock` reads the user input from the command line.
