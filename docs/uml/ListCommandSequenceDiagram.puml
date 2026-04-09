@@ -2,21 +2,19 @@
 title ListCommand Sequence Diagram
 
 actor User
-participant ":Medistock" as App
+participant ":MediStock" as App
 participant ":Ui" as Ui
 participant ":Parser" as Parser
 participant ":ListCommand" as ListCommand
 participant ":Inventory" as Inventory
 
-User -> App : run "list"
+User -> App : enters list
 activate App
 
 App -> Ui : getInput()
-activate Ui
-Ui --> App : input:String
-deactivate Ui
+Ui --> App : input
 
-App -> Parser : parseCommand(input:String)
+App -> Parser : parseCommand(input)
 activate Parser
 
 create ListCommand
@@ -28,63 +26,34 @@ deactivate ListCommand
 Parser --> App : command:ListCommand
 deactivate Parser
 
-App -> ListCommand : execute(inventory:Inventory, ui:Ui)
+App -> ListCommand : execute(...)
 activate ListCommand
 
-ListCommand -> Ui : showInventoryList(inventory:Inventory)
+ListCommand -> Ui : showInventoryList(...)
 activate Ui
 
-Ui -> Inventory : getSize()
+Ui -> Inventory : getActiveBatches()
 activate Inventory
-Inventory --> Ui : size:int
+Inventory --> Ui : activeItems
 deactivate Inventory
 
-alt size == 0
-  Ui -> Ui : printEmptyInventoryMessage()
-  activate Ui
-  deactivate Ui
-else size > 0
-  Ui -> Inventory : getActiveBatches()
-  activate Inventory
-  Inventory --> Ui : activeItems: List<InventoryItem>
-  deactivate Inventory
+Ui -> Inventory : getExpiredBatches()
+activate Inventory
+Inventory --> Ui : expiredItems
+deactivate Inventory
 
-  alt activeItems.isEmpty()
-    Ui -> Ui : print("No active batches found.")
-    activate Ui
-    deactivate Ui
-  else has active items
-    loop each active item
-      Ui -> Ui : printActiveItemDetails(...)
-      activate Ui
-      deactivate Ui
-    end
-  end
-
-  Ui -> Inventory : getExpiredBatches()
-  activate Inventory
-  Inventory --> Ui : expiredItems: List<InventoryItem>
-  deactivate Inventory
-
-  alt expiredItems.isEmpty()
-    Ui -> Ui : print("No expired batches found.")
-    activate Ui
-    deactivate Ui
-  else has expired items
-    loop each expired item
-      Ui -> Ui : printExpiredItemDetails(...)
-      activate Ui
-      deactivate Ui
-    end
-  end
+alt inventory is empty
+    Ui -> Ui : show empty inventory message
+else inventory has items
+    Ui -> Ui : display active items
+    Ui -> Ui : display expired items
 end
 
-Ui --> ListCommand : return
 deactivate Ui
-
 ListCommand --> App : return
 deactivate ListCommand
 
 App --> User : inventory displayed
 deactivate App
+
 @enduml
