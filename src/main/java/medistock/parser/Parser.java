@@ -25,6 +25,8 @@ import java.time.format.DateTimeParseException;
 public class Parser {
     private static final String DOSAGE_UNITS = "mcg|mg|g|kg|ml|l|iu|units?|tablets?|capsules?";
     private static final String DOSAGE_PATTERN = "\\b\\d+(?:\\.\\d+)?\\s*(?:" + DOSAGE_UNITS + ")\\b";
+    private static final String NEGATIVE_DOSAGE_PATTERN =
+            "(^|\\s)-\\d+(?:\\.\\d+)?\\s*(?:" + DOSAGE_UNITS + ")\\b";
     private static final String DOSAGE_UNIT_PATTERN = "\\b(?:" + DOSAGE_UNITS + ")\\b";
 
     public static Command parseCommand(String input) throws MediStockException {
@@ -97,6 +99,10 @@ public class Parser {
                 .replaceAll(DOSAGE_UNIT_PATTERN, " ");
 
         return textWithoutDosage.matches(".*[a-z].*");
+    }
+
+    private static boolean hasNegativeDosage(String name) {
+        return name.toLowerCase().matches(".*" + NEGATIVE_DOSAGE_PATTERN + ".*");
     }
 
     private static int getNextIndex(String text, int currentIndex, int... indexes) {
@@ -193,6 +199,10 @@ public class Parser {
 
         if (!hasDrugName(name)) {
             throw new MediStockException("Medication name must include a drug name.");
+        }
+
+        if (hasNegativeDosage(name)) {
+            throw new MediStockException("Medication must not include a negative dosage.");
         }
 
         int min;

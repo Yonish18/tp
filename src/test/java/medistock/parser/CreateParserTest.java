@@ -67,6 +67,14 @@ public class CreateParserTest {
     }
 
     @Test
+    void parseCommand_negativeDosageInName_throwsException() {
+        String input = "create n/Paracetamol -100mg u/Tablets min/200";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
     void parseCommand_emptyUnit_throwsException() {
         String input = "create n/Aspirin u/ min/10";
 
