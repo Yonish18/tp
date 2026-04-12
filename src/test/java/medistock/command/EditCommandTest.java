@@ -16,7 +16,6 @@ import medistock.exception.MediStockException;
 import medistock.inventory.Batch;
 import medistock.inventory.Inventory;
 import medistock.inventory.InventoryItem;
-import medistock.storage.Storage;
 import medistock.ui.Ui;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,7 +29,6 @@ public class EditCommandTest {
     void execute_editUnitOnly_updatesUnit() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         InventoryItem item = new InventoryItem("Aspirin", "Tablets", 10);
         inventory.addItem(item);
@@ -48,7 +46,6 @@ public class EditCommandTest {
     void execute_editMinOnly_updatesMinimumThreshold() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         InventoryItem item = new InventoryItem("Aspirin", "Tablets", 10);
         inventory.addItem(item);
@@ -66,7 +63,6 @@ public class EditCommandTest {
     void execute_editNameOnly_updatesInventoryKey() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         InventoryItem item = new InventoryItem("Aspirin", "Tablets", 10);
         inventory.addItem(item);
@@ -84,7 +80,6 @@ public class EditCommandTest {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
         Path filePath = tempDir.resolve("Inventory.txt");
-        Storage storage = new Storage(filePath);
         List<String> histories = new ArrayList<>();
         InventoryItem item = new InventoryItem("Aspirin", "Tablets", 10);
         item.addBatch(new Batch(1, 20, LocalDate.now().plusDays(30)));
@@ -106,7 +101,6 @@ public class EditCommandTest {
     void execute_renameToExistingItem_throwsException() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         inventory.addItem(new InventoryItem("Aspirin", "Tablets", 10));
         inventory.addItem(new InventoryItem("Panadol", "Capsules", 20));
@@ -124,7 +118,6 @@ public class EditCommandTest {
     void execute_renameToSameNormalizedName_succeeds() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         InventoryItem item = new InventoryItem("Aspirin", "Tablets", 10);
         item.addBatch(new Batch(1, 15, LocalDate.now().plusDays(30)));

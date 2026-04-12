@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import medistock.storage.Storage;
 import org.junit.jupiter.api.Test;
 
 import medistock.exception.MediStockException;
@@ -46,7 +45,6 @@ class HistoryCommandTest {
     void execute_nonEmptyHistories_historiesPassedToUi() throws MediStockException {
         HistoryCommand command = new HistoryCommand();
         Inventory inventory = new Inventory();
-        Storage storage = new Storage(Path.of("./data/Inventory.txt"));
         List<String> histories = List.of(
                 "create n/Panadol u/tablet min/10",
                 "withdraw n/Panadol q/2");
@@ -66,7 +64,6 @@ class HistoryCommandTest {
         HistoryCommand command = new HistoryCommand();
         Inventory inventory = new Inventory();
         List<String> histories = new ArrayList<>();
-        Storage storage = new Storage(Path.of("./data/Inventory.txt"));
         UiStub uiStub = new UiStub();
 
         command.execute(inventory, uiStub, histories);

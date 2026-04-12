@@ -13,7 +13,6 @@ import java.util.List;
 
 import medistock.exception.MediStockException;
 import medistock.inventory.Inventory;
-import medistock.storage.Storage;
 import medistock.ui.Ui;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -27,7 +26,6 @@ public class CreateCommandTest {
     void execute_validCreate_completesAndAddsItem() throws IOException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         CreateCommand command = new CreateCommand("Aspirin", "Tablets", 10);
 
@@ -41,7 +39,6 @@ public class CreateCommandTest {
     void execute_validCreate_addsOneHistoryEntry() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         CreateCommand command = new CreateCommand("Aspirin", "Tablets", 10);
 
@@ -56,7 +53,6 @@ public class CreateCommandTest {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
         Path filePath = tempDir.resolve("Inventory.txt");
-        Storage storage = new Storage(filePath);
         List<String> histories = new ArrayList<>();
         CreateCommand command = new CreateCommand("Aspirin", "Tablets", 10);
 
@@ -71,7 +67,6 @@ public class CreateCommandTest {
     void execute_duplicateItem_throwsException() throws MediStockException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
-        Storage storage = new Storage(tempDir.resolve("Inventory.txt"));
         List<String> histories = new ArrayList<>();
         CreateCommand firstCommand = new CreateCommand("Aspirin", "Tablets", 10);
         CreateCommand secondCommand = new CreateCommand("Aspirin", "Tablets", 10);
