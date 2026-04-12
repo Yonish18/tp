@@ -1,7 +1,6 @@
 package medistock.inventory;
 
 import medistock.exception.MediStockException;
-import medistock.parser.Parser;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
