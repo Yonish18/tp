@@ -12,6 +12,7 @@
     - [Feature: Delete Item by Index](#feature-delete-item-by-index)
     - [Feature: List Inventory](#feature-list-inventory)
     - [Feature: Find Item](#feature-find-item)
+    - [Feature: List History](#feature-list-history)
     - [Feature: Remove Expired Batches](#feature-remove-expired-batches)
     - [Feature: Automatic Expiry Detection](#feature-automatic-expiry-detection)
     - [Feature: Low Stock Warning](#feature-low-stock-warning)
@@ -387,10 +388,10 @@ Each change displays:
 - Command entered
 - Name of stock
 - Relevant information of each change according to the list below:
-  1. `create`: unit and minimum threshold of stock
-  2. `batch`: quantity of stock added and expiry date of added batch
-  3. `withdraw`: quantity of stock withdrawn
-  4. `remove-expired`:
+  1. `create`: Unit and minimum threshold of stock
+  2. `batch`: Quantity of stock added and expiry date of added batch
+  3. `withdraw`: Quantity of stock withdrawn
+  4. `remove-expired`: Quantity of expired batches removed
 
 If the history is empty, prints "Currently no history recorded."
 
