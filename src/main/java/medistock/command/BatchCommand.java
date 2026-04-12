@@ -34,7 +34,7 @@ public class BatchCommand extends Command {
         try {
             InventoryItem item = inventory.getItem(name);
             item.sortAndMarkExpiredBatches();
-            int batchNumber = item.getTotalBatchQuantity() + 1;
+            int batchNumber = item.getAndIncrementBatchNumber();
             if (expiryDate.isBefore(LocalDate.now())) {
                 String errorMessage = "This batch is already expired (" + expiryDate + ").";
                 if (!ui.wasMessageConfirm(errorMessage)) {
