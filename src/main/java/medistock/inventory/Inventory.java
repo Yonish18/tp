@@ -90,12 +90,11 @@ public class Inventory {
         assert  keyword != null: ASSERT_NAME_NOT_NULL;
         String key = normalizeName(keyword);
 
-        List<InventoryItem> matchedItems = items.values().stream()
+        return items.values().stream()
                 .filter(item -> item.getName()
                         .toLowerCase()
                         .contains(key))
                 .collect(toList());
-        return matchedItems;
     }
 
     public void addBatchToItem(String itemName, Batch batch) throws MediStockException {

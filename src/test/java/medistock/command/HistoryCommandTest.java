@@ -3,11 +3,9 @@ package medistock.command;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import medistock.storage.Storage;
 import org.junit.jupiter.api.Test;
 
 import medistock.exception.MediStockException;
@@ -16,7 +14,7 @@ import medistock.ui.Ui;
 
 /**
  * Tests the HistoryCommand class.
- * Uses a Ui stub so that the command can be tested in isolation from the real Ui.
+ * Uses an Ui stub so that the command can be tested in isolation from the real Ui.
  */
 class HistoryCommandTest {
     /**
@@ -46,13 +44,12 @@ class HistoryCommandTest {
     void execute_nonEmptyHistories_historiesPassedToUi() throws MediStockException {
         HistoryCommand command = new HistoryCommand();
         Inventory inventory = new Inventory();
-        Storage storage = new Storage(Path.of("./data/Inventory.txt"));
         List<String> histories = List.of(
                 "create n/Panadol u/tablet min/10",
                 "withdraw n/Panadol q/2");
         UiStub uiStub = new UiStub();
 
-        command.execute(inventory, uiStub, storage, histories);
+        command.execute(inventory, uiStub, histories);
 
         assertTrue(uiStub.showHistoryCalled);
         assertSame(histories, uiStub.receivedHistories);
@@ -66,10 +63,9 @@ class HistoryCommandTest {
         HistoryCommand command = new HistoryCommand();
         Inventory inventory = new Inventory();
         List<String> histories = new ArrayList<>();
-        Storage storage = new Storage(Path.of("./data/Inventory.txt"));
         UiStub uiStub = new UiStub();
 
-        command.execute(inventory, uiStub, storage, histories);
+        command.execute(inventory, uiStub, histories);
 
         assertTrue(uiStub.showHistoryCalled);
         assertSame(histories, uiStub.receivedHistories);

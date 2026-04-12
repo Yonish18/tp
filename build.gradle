@@ -29,7 +29,7 @@ test {
 }
 
 application {
-    mainClass.set("medistock.Medistock")
+    mainClass.set("medistock.MediStock")
 }
 
 shadowJar {

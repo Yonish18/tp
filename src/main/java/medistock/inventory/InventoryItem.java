@@ -76,25 +76,6 @@ public class InventoryItem implements Storable {
         return batches.size();
     }
 
-    /**
-     * Returns the earliest expiry date
-     *
-     * @return the earliest expiry date
-     */
-    public LocalDate getEarliestExpiry() throws MediStockException {
-        LocalDate earliestDate = null;
-        for (Batch batch : batches) {
-            if (!batch.isExpired()) {
-                if (earliestDate == null || batch.getExpiryDate().isBefore(earliestDate)) {
-                    earliestDate = batch.getExpiryDate();
-                }
-            }
-        }
-        if (earliestDate == null) {
-            throw new MediStockException("There is no recorded stock for this item");
-        }
-        return earliestDate;
-    }
 
     /**
      * Returns the total quantity of this item across all batches.
@@ -112,7 +93,6 @@ public class InventoryItem implements Storable {
     }
 
     public String getStockStatus() {
-        int quantity = getQuantity();
         if (isLowStock()) {
             return "Critical";
         } else {

@@ -1,11 +1,9 @@
 package medistock.ui;
 
-import medistock.exception.MediStockException;
 import medistock.inventory.Batch;
 import medistock.inventory.Inventory;
 import medistock.inventory.InventoryItem;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -77,12 +75,9 @@ public class Ui {
      *                Should describe the action or warning requiring confirmation.
      * @return {@code true} if the user confirms with "y", {@code false} if "n".
      */
-    public boolean wasMessageConfirm(String message) throws IOException {
+    public boolean wasMessageConfirm(String message) {
         String errorStr = message + System.lineSeparator() + "Do you want to continue anyways? (y/n)";
         System.out.println(errorStr);
-
-        if (scanner.hasNextLine() && System.in.available() == 0) {
-        }
 
         while (true) {
             String confirmation = scanner.nextLine().trim().toLowerCase();
@@ -96,7 +91,8 @@ public class Ui {
                 System.out.println("Input cannot be empty. Please enter y or n:");
                 break;
             default:
-                System.out.println("Invalid input: \"" + confirmation + "\". Please enter y or n:");
+                System.out.println("Invalid input. Aborting command.");
+                return false;
             }
         }
     }
@@ -123,7 +119,7 @@ public class Ui {
     }
 
     public void printNewLine() {
-        System.out.println("");
+        System.out.println();
     }
 
     /**
@@ -131,7 +127,7 @@ public class Ui {
      *
      * @param inventory The inventory to display.
      */
-    public void showInventoryList(Inventory inventory) throws MediStockException {
+    public void showInventoryList(Inventory inventory) {
         if (inventory.getSize() == 0) {
             printEmptyInventoryMessage();
         } else {
@@ -172,7 +168,7 @@ public class Ui {
      *
      * @param matchedItems The items that contain the desired keyword
      */
-    public void showFindList(Inventory inventory, List<InventoryItem> matchedItems) throws MediStockException {
+    public void showFindList(Inventory inventory, List<InventoryItem> matchedItems) {
         if (matchedItems.isEmpty()) {
             printLine();
             System.out.println("No matches found!");
@@ -192,12 +188,11 @@ public class Ui {
      *
      * @param histories The history to display.
      */
-    public void showHistory(List<String> histories) throws MediStockException {
+    public void showHistory(List<String> histories) {
         if (histories.isEmpty()) {
             printEmptyHistoryMessage();
         } else {
             int itemIndex = 1;
-            int maxIndex = histories.size();
             printLine();
             System.out.println("History of Stocks:");
             for (java.lang.String commandText : histories) {
@@ -211,7 +206,6 @@ public class Ui {
     public int getItemIndex(Inventory inventory, String searchName) {
         int itemCount = 1;
         for (InventoryItem item : inventory.getAllItems()) {
-            String foundName = item.getName();
             if (searchName.equals(item.getName())) {
                 return itemCount;
             }
@@ -286,7 +280,7 @@ public class Ui {
         System.out.println(quantity + " " + unit);
     }
 
-    public void printItemDetails(Inventory inventory, InventoryItem item) throws MediStockException {
+    public void printItemDetails(Inventory inventory, InventoryItem item) {
         String itemName = item.getName();
         String unit = item.getUnit();
         item.sortAndMarkExpiredBatches();
@@ -328,7 +322,7 @@ public class Ui {
     }
 
     public void printActiveItemDetails(Inventory inventory,
-            InventoryItem item) throws MediStockException {
+            InventoryItem item) {
         String itemName = item.getName();
         String unit = item.getUnit();
 
@@ -350,8 +344,7 @@ public class Ui {
         System.out.printf("Status: %s%n", item.getStockStatus());
     }
 
-    public void printExpiredItemDetails(Inventory inventory,
-            InventoryItem item) throws MediStockException {
+    public void printExpiredItemDetails(Inventory inventory, InventoryItem item) {
         String itemName = item.getName();
         String unit = item.getUnit();
 
@@ -366,15 +359,13 @@ public class Ui {
         }
     }
 
-    public void printBatch(Inventory inventory, InventoryItem item, int quantity, LocalDate date)
-            throws MediStockException {
-
+    public void printBatch(Inventory inventory, InventoryItem item, int quantity, LocalDate date) {
         String itemName = item.getName();
 
         System.out.printf("Batch of %d %s, expiring on %3$tF %n has been successfully added to" +
                 " the inventory!%n", quantity, itemName, date);
         printLine();
-        System.out.println(String.format("Stock of %s is now:", itemName));
+        System.out.printf("Stock of %s is now:%n", itemName);
         printItemDetails(inventory, item);
         printLine();
     }
