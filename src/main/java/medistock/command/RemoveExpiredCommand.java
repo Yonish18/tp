@@ -26,6 +26,7 @@ public class RemoveExpiredCommand extends Command {
         if (name == null) {
             int count = inventory.removeAllExpiredBatches();
             ui.printRemoveExpired(count);
+            histories.add(toHistoryStringAll(count));
             storage.saveToFile(inventory);
         } else {
             if (!inventory.hasItem(name)) {
@@ -35,7 +36,16 @@ public class RemoveExpiredCommand extends Command {
             InventoryItem item = inventory.getItem(name);
             int count = item.removeExpiredBatches();
             ui.printRemoveExpired(name, count);
+            histories.add(toHistoryString(count));
             storage.saveToFile(inventory);
         }
+    }
+
+    public String toHistoryStringAll(int count) {
+        return "Removed " + count + " expired batch(es) from inventory.";
+    }
+
+    public String toHistoryString(int count) {
+        return "Removed " + count + " expired batch(es) from '" + name + "'.";
     }
 }

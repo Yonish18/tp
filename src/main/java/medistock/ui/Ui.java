@@ -197,10 +197,9 @@ public class Ui {
             printEmptyHistoryMessage();
         } else {
             int itemIndex = 1;
-            int maxIndex = histories.size();
             printLine();
             System.out.println("History of Stocks:");
-            for (java.lang.String commandText : histories) {
+            for (String commandText : histories) {
                 System.out.println(itemIndex + ". " + commandText);
                 itemIndex++;
             }
