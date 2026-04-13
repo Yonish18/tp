@@ -159,6 +159,15 @@ public class Parser {
         }
     }
 
+    private static void rejectUnexpectedTextBeforeFirstPrefix(
+            String text, String commandWord, String expectedPrefix, String errorMessage)
+            throws MediStockException {
+        String arguments = text.substring(commandWord.length()).trim();
+        if (!arguments.startsWith(expectedPrefix)) {
+            throw new MediStockException(errorMessage);
+        }
+    }
+
     /**
      * Parses the "batch" command input and prepares a BatchCommand for execution.
      *
@@ -176,9 +185,12 @@ public class Parser {
             throw new MediStockException("Invalid batch format. " + Ui.BATCH_FORMAT);
         }
 
+        String invalidOrderMessage = "Ensure the arguments are in the correct order:" + Ui.BATCH_FORMAT;
+        rejectDuplicatePrefixes(text, invalidOrderMessage, "n/", "q/", "d/");
+        rejectUnexpectedTextBeforeFirstPrefix(text, "batch", "n/", invalidOrderMessage);
+
         if (!(nameIndex < quantIndex && quantIndex < expiryIndex)) {
-            throw new MediStockException("Ensure the arguments are in the correct order:" +
-                            Ui.BATCH_FORMAT);
+            throw new MediStockException(invalidOrderMessage);
         }
 
         String name = getArgument(text, nameIndex, quantIndex).trim();
@@ -362,8 +374,12 @@ public class Parser {
         if (nameIndex == -1 || quantityIndex == -1) {
             throw new MediStockException("Invalid withdraw format. " + Ui.WITHDRAW_FORMAT);
         }
+        String invalidOrderMessage = "Use correct format: " + Ui.WITHDRAW_FORMAT;
+        rejectDuplicatePrefixes(text, invalidOrderMessage, "n/", "q/");
+        rejectUnexpectedTextBeforeFirstPrefix(text, "withdraw", "n/", invalidOrderMessage);
+
         if (!(nameIndex < quantityIndex)) {
-            throw new MediStockException("Use correct format: " + Ui.WITHDRAW_FORMAT);
+            throw new MediStockException(invalidOrderMessage);
         }
 
         String name = getArgument(text, nameIndex, quantityIndex);
