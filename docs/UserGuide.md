@@ -12,7 +12,7 @@ when handling routine stock-management tasks.
    Mac users should follow the Java installation guide [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 2. Download the latest version of `MediStock` from [here](https://github.com/AY2526S2-CS2113-W10-2/tp/releases).
 3. Open a terminal in the folder containing the downloaded JAR file.
-4. Run `java -jar medistock.jar`.
+4. Run `java -jar MediStock-v2.1.jar`.
 5. Type a command and press Enter.
 
 ## Features

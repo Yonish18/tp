@@ -604,13 +604,13 @@ simplifies stock-taking, and helps maintain minimum stock thresholds so that cri
 
 ## Appendix E: Instructions for Manual Testing
 
-The steps below assume the jar file is named `medistock.jar` and is run from its containing folder.
+The steps below assume the jar file is named `MediStock-v2.1.jar` and is run from its containing folder.
 
 ### Launching the application
 
 1. Ensure that Java 17 or above is installed.
-2. Open a terminal in the folder containing `medistock.jar`.
-3. Run `java -jar medistock.jar`.
+2. Open a terminal in the folder containing `MediStock-v2.1.jar`.
+3. Run `java -jar MediStock-v2.1.jar`.
 
 ### Starting from a clean state
 
