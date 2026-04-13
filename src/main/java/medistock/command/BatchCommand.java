@@ -31,15 +31,15 @@ public class BatchCommand extends Command {
         }
         InventoryItem item = inventory.getItem(name);
         item.sortAndMarkExpiredBatches();
-        int batchNumber = item.getBatchNumber();
         if (expiryDate.isBefore(LocalDate.now())) {
-            String confirmationPrompt = "This batch is already expired (" + expiryDate + ").";
-            if (!ui.wasMessageConfirm(confirmationPrompt)) {
+            String errorMessage = "This batch is already expired (" + expiryDate + ").";
+            if (!ui.wasMessageConfirm(errorMessage)) {
                 System.out.println("Batch not added.");
                 ui.printAbortCommand();
                 return;
             }
         }
+        int batchNumber = item.getBatchNumber();
         Batch newBatch = new Batch(batchNumber, quantity, expiryDate);
         item.addBatch(newBatch);
         item.sortAndMarkExpiredBatches();

@@ -54,6 +54,30 @@ public class WithdrawParserTest {
     }
 
     @Test
+    void parseCommand_unexpectedTextBeforeNameTag_throwsException() {
+        String input = "withdraw extra n/Aspirin q/5";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateNameTag_throwsException() {
+        String input = "withdraw n/Aspirin n/Panadol q/5";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateQuantityTag_throwsException() {
+        String input = "withdraw n/Aspirin q/5 q/10";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
     void parseCommand_nonNumericQuantity_throwsException() {
         String input = "withdraw n/Aspirin q/abc";
 

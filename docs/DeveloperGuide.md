@@ -536,7 +536,7 @@ application startup <br>
 the `saveToFile(Storable data)` method is invoked, since both `InventoryItem` and `Batch` implements the `storable`
 interface, this method polymorphically calls `data.toFileFormat()` and simply appends the resulting formatted string to
 the end of the existing text file, appropriately. 
-* ***Full Inventory Overwrites:*** When a command modifies existing data or removes item (i.e `withdraw` or `delete`) the
+* ***Full Inventory Overwrites:*** When a command modifies existing data or removes item (i.e. `withdraw` or `delete`) the
 text file completely updates itself to reflect the new state. It does so vie the `saveToFile(Inventory inventory) method`
 which iterates through the entire `Inventory`, retrieving every `InventoryItem` and looping through all of its associated 
 `Batch` objects. It calls `toFileFormat()` on each entity and completely overwrites the text file from top to bottom. 
@@ -619,21 +619,88 @@ The steps below assume the jar file is named `MediStock-v2.1.jar` and is run fro
 
 ### Suggested manual tests
 
+*Creating and Editing Items*
 1. Create a new item:
    - Command: `create n/Paracetamol 500mg u/Tablets min/250`
    - Expected: a success message is shown, and `list` displays the new item with no batches yet.
 2. Reject a duplicate create:
    - Command: `create n/Paracetamol 500mg u/Tablets min/250`
    - Expected: an error message is shown for the duplicate item.
-3. Edit an existing item:
+3. Create with missing fields (invalid format)
+   - Command: `create n/ u/Tablets min/250`
+   - Expected: An error message indicating that name, unit and minimum threshold must not be empty
+4. Edit an existing item:
    - Command: `edit o/Paracetamol 500mg n/Paracetamol 650mg u/Tablets min/300`
    - Expected: a success message is shown, and `list` displays the updated item details.
-4. Add stock and verify listing:
-   - Commands: `batch n/Paracetamol 650mg q/400 d/2027-12-31` followed by `list`
+5. Edit a non-exiting item
+   - Command: `edit o/Aspirin n/Aspirin Plus`
+   - Expected: An error message indicating the product is not found.
+
+*Adding and Managing Stock*
+1. Add stock and verify listing:
+   - Commands: `batch n/Paracetamol 650mg q/400 d/2030-12-31`
+   - followed by `list`
    - Expected: the item shows one batch with quantity `400`.
-5. Withdraw stock:
+2. Add stock with invalid date format
+   - Command: `batch n/Paracetamol 650mg q/100 d/invalid-date`
+   - Expected: An error message indicating invalid expiry date format.
+3. Add stock to a non-existent item
+   - Command: `batch n/Aspirin q/100 d/2027-12-31`
+   - Expected: An error message indicating the product is not found.
+
+*Withdrawing Stock*
+1. Withdraw stock:
    - Command: `withdraw n/Paracetamol 650mg q/50`
    - Expected: the displayed quantity decreases accordingly.
-6. Check command history:
-   - Command: `history`
-   - Expected: the earlier `create`, `edit`, `batch`, and `withdraw` actions appear in order.
+2. Withdraw more than available stock
+   - Command: `withdraw n/Paracetamol 650mg q/1000`
+   - Expected: An error message indicating insufficient stock.
+
+*Listing and Finding Items*
+1. List inventory (normal case)
+   - Command: `list`
+   - Expected: Displays all items with their active and expired batches.
+2. List inventory when empty
+   - Command: `list`
+   - Expected: Displays “Your inventory is empty.”
+3. Find an existing item
+   - Command: `find Paracetamol`
+   - Expected: Matching items are displayed.
+4. Find a non-existent item
+   - Command: `find Aspirin`
+   - Expected: Displays “No matches found!”
+
+*Expiry and Removal Features*
+1. Add an expired batch and verify detection
+   - Commands:
+   - `batch n/Paracetamol 650mg q/100 d/2024-01-01`
+   - followed by `list`
+   - Expected: The batch is shown under expired inventory, and a warning message may be displayed.
+2. Remove expired batches (all items)
+   - Command: `remove-expired`
+   - Expected: All expired batches are removed and a summary message is displayed.
+3. Remove expired batches for a specific item
+   - Command: `remove-expired n/Paracetamol 650mg`
+   - Expected: Only expired batches for the specified item are removed.
+
+*Deleting Items*
+1. Delete item by name
+   - Command: `delete n/Paracetamol 650mg`
+   - Expected: The item is removed from the inventory.
+2. Delete item by index
+   - Command: delete i/1
+   - Expected: The item at index 1 is removed.
+3. Delete with invalid index
+   - Command: delete i/999
+   - Expected: An error message indicating index is out of bounds.
+
+*History and Persistence*
+1. Check command history:
+    - Command: `history`
+    - Expected: the earlier `create`, `edit`, `batch`, and `withdraw` actions appear in order.
+2. Verify data persistence
+Steps:
+* Create or modify items
+* Exit the application using exit
+* Launch the application again
+* Expected: Inventory and history data are preserved after restarting.
