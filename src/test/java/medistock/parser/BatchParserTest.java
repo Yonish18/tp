@@ -5,8 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BatchParserTest {
+
+    @Test
+    void parseCommand_bareBatch_throwsInvalidBatchFormat() {
+        String input = "batch";
+
+        MediStockException exception = assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+        assertTrue(exception.getMessage().startsWith("Invalid batch format."));
+    }
 
     @Test
     void prepareBatch_missingNameTag_throwsException() {
