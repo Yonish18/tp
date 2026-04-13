@@ -69,6 +69,30 @@ public class CreateParserTest {
     }
 
     @Test
+    void parseCommand_duplicateNameTag_throwsException() {
+        String input = "create n/Aspirin n/Panadol u/Tablets min/10";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateUnitTag_throwsException() {
+        String input = "create n/Aspirin u/Tablets u/Capsules min/10";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateMinTag_throwsException() {
+        String input = "create n/Aspirin u/Tablets min/10 min/20";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
     void parseCommand_emptyName_throwsException() {
         String input = "create n/ u/Tablets min/10";
 

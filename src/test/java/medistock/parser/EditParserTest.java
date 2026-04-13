@@ -123,4 +123,36 @@ public class EditParserTest {
         assertThrows(MediStockException.class,
                 () -> Parser.parseCommand(input));
     }
+
+    @Test
+    void parseCommand_duplicateOldNameTag_throwsException() {
+        String input = "edit o/Aspirin o/Panadol n/Ibuprofen";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateNewNameTag_throwsException() {
+        String input = "edit o/Aspirin n/Panadol n/Ibuprofen";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateUnitTag_throwsException() {
+        String input = "edit o/Aspirin u/Tablets u/Capsules";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateMinTag_throwsException() {
+        String input = "edit o/Aspirin min/10 min/20";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
 }

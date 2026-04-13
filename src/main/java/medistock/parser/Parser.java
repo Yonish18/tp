@@ -131,6 +131,25 @@ public class Parser {
         return index + 1;
     }
 
+    private static int countPrefixOccurrences(String text, String prefix) {
+        int count = 0;
+        int index = text.indexOf(" " + prefix);
+        while (index != -1) {
+            count++;
+            index = text.indexOf(" " + prefix, index + 1);
+        }
+        return count;
+    }
+
+    private static void rejectDuplicatePrefixes(String text, String errorMessage, String... prefixes)
+            throws MediStockException {
+        for (String prefix : prefixes) {
+            if (countPrefixOccurrences(text, prefix) > 1) {
+                throw new MediStockException(errorMessage);
+            }
+        }
+    }
+
     /**
      * Parses the "batch" command input and prepares a BatchCommand for execution.
      *
@@ -198,6 +217,8 @@ public class Parser {
             throw new MediStockException("Invalid create format. " + Ui.CREATE_FORMAT);
         }
 
+        rejectDuplicatePrefixes(text, "Use create format: " + Ui.CREATE_FORMAT, "n/", "u/", "min/");
+
         if (!(nameIndex < unitIndex && unitIndex < minIndex)) {
             throw new MediStockException("Use create format: " + Ui.CREATE_FORMAT);
         }
@@ -240,6 +261,8 @@ public class Parser {
         if (oldNameIndex == -1) {
             throw new MediStockException("Invalid edit format. " + Ui.EDIT_FORMAT);
         }
+
+        rejectDuplicatePrefixes(text, "Use edit format: " + Ui.EDIT_FORMAT, "o/", "n/", "u/", "min/");
 
         if (nameIndex == -1 && unitIndex == -1 && minIndex == -1) {
             throw new MediStockException("Edit command requires at least one field to update.");
