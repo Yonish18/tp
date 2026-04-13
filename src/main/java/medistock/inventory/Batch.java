@@ -44,11 +44,7 @@ public class Batch implements Storable {
     public LocalDate getExpiryDate() {
         return expiryDate;
     }
-
-    public boolean isExpired() {
-        return isExpired;
-    }
-
+    
     public void markExpired() {
         this.isExpired = true;
     }
