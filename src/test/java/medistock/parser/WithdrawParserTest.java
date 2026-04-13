@@ -2,6 +2,7 @@ package medistock.parser;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import medistock.command.Command;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,15 @@ public class WithdrawParserTest {
 
         assertThrows(MediStockException.class,
                 () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_bareWithdraw_throwsInvalidWithdrawFormat() {
+        String input = "withdraw";
+
+        MediStockException exception = assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+        assertTrue(exception.getMessage().startsWith("Invalid withdraw format."));
     }
 
     @Test

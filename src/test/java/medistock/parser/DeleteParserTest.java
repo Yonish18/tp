@@ -2,6 +2,7 @@ package medistock.parser;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import medistock.command.Command;
 import medistock.command.DeleteCommandName;
@@ -33,6 +34,15 @@ public class DeleteParserTest {
 
         assertThrows(MediStockException.class,
                 () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_bareDelete_throwsInvalidDeleteFormat() {
+        String input = "delete";
+
+        MediStockException exception = assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+        assertTrue(exception.getMessage().startsWith("Invalid delete format."));
     }
 
     @Test
