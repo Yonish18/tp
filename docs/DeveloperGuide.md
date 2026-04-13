@@ -18,6 +18,7 @@
     - [Feature: Low Stock Warning](#feature-low-stock-warning)
     - [Feature: Help Command](#feature-help-command)
     - [Feature: Exit Command](#feature-exit-command)
+    - [Feature: Local Storage](#feature-local-storage)
     - [Feature: Data Storage](#feature-data-storage)
 - [Product scope](#product-scope)
     - [Target user profile](#target-user-profile)
