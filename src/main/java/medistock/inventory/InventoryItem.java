@@ -200,7 +200,8 @@ public class InventoryItem implements Storable {
 
     @Override
     public String toFileFormat() {
-        String descriptionLine = String.format("Item: %s (%s) | %d | %d", this.name, this.unit, this.minimumThreshold, this.nextBatchNumber);
+        String descriptionLine = String.format("Item: %s (%s) | %d | %d", this.name, this.unit, this.minimumThreshold,
+                        this.nextBatchNumber);
         return descriptionLine + System.lineSeparator() + "[Batches]";
     }
 
