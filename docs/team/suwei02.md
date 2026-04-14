@@ -26,6 +26,10 @@ I implemented or substantially contributed to the following areas:
 - Built key parts of the inventory model, including the `Batch` class and multiple methods in `Inventory` and `InventoryItem`, such as item lookup, quantity handling, low-stock checks, and batch-related operations.
 - Introduced project logging through `LogsCentre`, wired it into the main application flow, and added logs for important events such as duplicate item creation attempts and invalid retrieval operations.
 - Improved parser robustness by tightening command parsing for commands such as `withdraw`, `batch`, and `delete`.
+- Allow case-insensitive command inputs.
+- These features required careful coordination between the Parser, Command, Inventory, and Ui components.
+In particular, the `list` and `find` features involved non-trivial formatting and data traversal logic to correctly display both active and expired batches while maintaining consistency with the underlying inventory model.
+The implementation also required ensuring correctness under edge cases such as empty inventories, partial keyword matches, and expired batch handling, which increased the overall complexity of these features.
 
 ### Testing Contributions
 I added and extended tests to improve confidence in the application's core behavior:
@@ -42,6 +46,7 @@ I contributed extensively to the project documentation:
 - Wrote the Developer Guide sections for the `list`, `find`, `help`, and `exit` features.
 - Added PlantUML source files and generated diagrams for the `typicalcommand`, `list`, `find`, `help`, and `exit` commands.
 - Improved wording, examples, and formatting across the documentation to reduce inconsistencies between the guides and the implementation.
+- Expanded the manual testing section in the Developer Guide to cover all features, including edge cases, invalid inputs, expiry handling, and persistence behavior.
 
 ### Review and Integration Contributions
 Beyond direct feature work, I also helped with integration and repository maintenance:
@@ -77,3 +82,5 @@ In addition to feature work, I also contributed by improving engineering quality
 - [link 3](https://github.com/AY2526S2-CS2113-W10-2/tp/pull/54/changes)
 - Enabled assertions in the build and added assertion checks in inventory-related methods.
 - Helped keep the codebase consistent by fixing smaller issues in build configuration, logging paths, imports, spacing, and test coverage.
+- Reported bugs in other teams’ products during the Practical Exam (PE) dry run. [PE-d run](https://github.com/NUS-CS2113-AY2526-S2/ped-Suwei02/issues)
+Provided clear reproduction steps, expected vs actual behaviour, and helped other teams identify issues in their implementation.
