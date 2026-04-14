@@ -15,11 +15,9 @@
     - [Feature: List History](#feature-list-history)
     - [Feature: Remove Expired Batches](#feature-remove-expired-batches)
     - [Feature: Automatic Expiry Detection](#feature-automatic-expiry-detection)
-    - [Feature: Low Stock Warning](#feature-low-stock-warning)
     - [Feature: Help Command](#feature-help-command)
     - [Feature: Exit Command](#feature-exit-command)
     - [Feature: Local Storage](#feature-local-storage)
-    - [Feature: Preserved Inventory](#feature-Preserved-Inventory)
 - [Product scope](#product-scope)
     - [Target user profile](#target-user-profile)
     - [Value proposition](#value-proposition)
@@ -46,13 +44,14 @@ How the architecture components interact:
 
 The sequence of interactions for a typical command, such as `withdraw n/paracetamol q/5`, is:
 
-1. `MediStock` reads the user input from the command line.
+1. `Ui` gets the user input from the command line and passes it to MediStock.
 2. `MediStock` passes the raw input to the `Parser` for interpretation.
 3. The `Parser` validates the format and returns the appropriate `Command` object.
 4. `MediStock` executes the `Command`.
 5. The `Command` interacts with `Inventory` to read or modify the in-memory data.
 6. The `Command` uses `Ui` to display the success message, error message, or requested output.
-7. If the command changes the inventory, `Storage` saves the updated data to file.
+7. After command execution, `MediStock` saves the updated inventory to `Storage` and 
+the updated history to `HistoryStorage`.
 
 ## Implementation
 
