@@ -6,22 +6,31 @@ title Create Item Class Diagram
 
 class Parser
 
-abstract class Command
+abstract class Command {
+    + execute(inventory: Inventory, ui: Ui, histories: List<String>)
+}
 
-class CreateCommand
+class CreateCommand {
+    - name: String
+    - unit: String
+    - minimumThreshold: int
+    + execute(inventory: Inventory, ui: Ui, histories: List<String>)
+}
 
-class Inventory
+class Inventory {
+    + addItem(item: InventoryItem)
+}
 
 class InventoryItem
 
-class Storage
+class Ui
 
 CreateCommand -|> Command
 
 Parser ..> CreateCommand : creates >
 CreateCommand ..> Inventory : uses >
-CreateCommand ..> Storage : uses >
 CreateCommand ..> InventoryItem : creates >
+CreateCommand ..> Ui : uses >
 
 Inventory "1" *-- "*" InventoryItem : contains >
 
