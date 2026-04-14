@@ -17,11 +17,12 @@ end
 App -> Parser : parseCommand(input)
 activate Parser
 create CreateCommand
-Parser -> CreateCommand : new CreateCommand(...)
+Parser -> CreateCommand ++ : new CreateCommand(...)
+deactivate CreateCommand
 Parser --> App : createCommand
 deactivate Parser
 
-App -> CreateCommand : execute(inventory, ui)
+App -> CreateCommand : execute(inventory, ui, histories)
 activate CreateCommand
 
 CreateCommand -> CreateCommand : create InventoryItem(...)

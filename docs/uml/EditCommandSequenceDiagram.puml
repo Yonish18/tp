@@ -2,7 +2,7 @@
 title EditCommand Sequence Diagram
 
 actor User
-participant ":Medistock" as App
+participant ":MediStock" as App
 participant ":Ui" as Ui
 participant ":Parser" as Parser
 participant ":EditCommand" as EditCommand
@@ -17,11 +17,12 @@ end
 App -> Parser : parseCommand(input)
 activate Parser
 create EditCommand
-Parser -> EditCommand : new EditCommand(...)
+Parser -> EditCommand ++ : new EditCommand(...)
+deactivate EditCommand
 Parser --> App : editCommand
 deactivate Parser
 
-App -> EditCommand : execute(inventory, ui)
+App -> EditCommand : execute(inventory, ui, histories)
 activate EditCommand
 
 EditCommand -> Inventory : editItem(...)
