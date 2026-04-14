@@ -37,6 +37,38 @@ public class DeleteParserTest {
     }
 
     @Test
+    void parseCommand_nameThenIndexTag_throwsException() {
+        String input = "delete n/Aspirin i/1";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_indexThenNameTag_throwsException() {
+        String input = "delete i/1 n/Aspirin";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateNameTag_throwsException() {
+        String input = "delete n/Aspirin n/Panadol";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
+    void parseCommand_duplicateIndexTag_throwsException() {
+        String input = "delete i/1 i/2";
+
+        assertThrows(MediStockException.class,
+                () -> Parser.parseCommand(input));
+    }
+
+    @Test
     void parseCommand_bareDelete_throwsInvalidDeleteFormat() {
         String input = "delete";
 

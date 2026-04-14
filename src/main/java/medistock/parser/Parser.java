@@ -58,8 +58,11 @@ public class Parser {
         } else if (commandWord.equals("delete")) {
             return prepareDelete(text);
         } else if (commandWord.equals("list")) {
+            rejectUnexpectedArguments(text, commandWord, "The list command does not take any arguments. Format: list");
             return new ListCommand();
         } else if (commandWord.equals("history")) {
+            rejectUnexpectedArguments(text, commandWord,
+                    "The history command does not take any arguments. Format: history");
             return new HistoryCommand();
         } else if (commandWord.equals("exit") || commandWord.equals("quit")) {
             return new ExitCommand();
@@ -164,6 +167,14 @@ public class Parser {
             throws MediStockException {
         String arguments = text.substring(commandWord.length()).trim();
         if (!arguments.startsWith(expectedPrefix)) {
+            throw new MediStockException(errorMessage);
+        }
+    }
+
+    private static void rejectUnexpectedArguments(String text, String commandWord, String errorMessage)
+            throws MediStockException {
+        String arguments = text.substring(commandWord.length()).trim();
+        if (!arguments.isEmpty()) {
             throw new MediStockException(errorMessage);
         }
     }
@@ -404,12 +415,22 @@ public class Parser {
     }
 
     private static Command prepareDelete(String text) throws MediStockException {
+        String invalidFormatMessage = "Invalid delete format. " + Ui.DELETE_FORMAT;
+        boolean hasNamePrefix = getPrefixedIndex(text, "n/") != -1;
+        boolean hasIndexPrefix = getPrefixedIndex(text, "i/") != -1;
+
+        if (hasNamePrefix && hasIndexPrefix) {
+            throw new MediStockException(invalidFormatMessage);
+        }
+
+        rejectDuplicatePrefixes(text, invalidFormatMessage, "n/", "i/");
+
         if (text.startsWith("delete n/")) {
             return prepareDeleteName(text);
         } else if (text.startsWith("delete i/")) {
             return prepareDeleteIndex(text);
         }
-        throw new MediStockException("Invalid delete format. " + Ui.DELETE_FORMAT);
+        throw new MediStockException(invalidFormatMessage);
     }
 
     private static Command prepareDeleteName(String text) throws MediStockException {
